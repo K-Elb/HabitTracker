@@ -6,12 +6,14 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct HabitTrackerApp: App {
     var body: some Scene {
         WindowGroup {
             HabitTracker()
+                .modelContainer(for: Habit.self)
         }
     }
 }

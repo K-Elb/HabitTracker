@@ -19,12 +19,12 @@ struct HabitsView: View {
                 if habits.isEmpty {
                     emptyStateView
                 } else {
-                    habitListView
+                    HabitsList()
                 }
             }
             .navigationTitle("Habits")
             .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
+                ToolbarItem {
                     Button(action: { showingAddHabit = true }) {
                         Image(systemName: "plus")
                     }
@@ -51,17 +51,6 @@ struct HabitsView: View {
                     .cornerRadius(12)
                     .padding(.horizontal, 40)
             }
-        }
-    }
-    
-    private var habitListView: some View {
-        ScrollView {
-            VStack {
-                ForEach(habits) { habit in
-                    HabitRow(habit: habit)
-                }
-            }
-            .padding()
         }
     }
     
