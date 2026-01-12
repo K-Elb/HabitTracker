@@ -17,7 +17,7 @@ struct HabitsView: View {
         NavigationStack {
             Group {
                 if habits.isEmpty {
-                    emptyStateView
+                    emptyStateView()
                 } else {
                     HabitsList()
                 }
@@ -33,11 +33,11 @@ struct HabitsView: View {
             .sheet(isPresented: $showingAddHabit) {
                 AddHabitView()
             }
-            .task { await addSampleGames() }
+            .task { await addHabits() }
         }
     }
     
-    private var emptyStateView: some View {
+    func emptyStateView() -> some View {
         VStack {
             ContentUnavailableView("No Habits Yet", systemImage: "checkmark.circle", description: Text("Start building better habits today"))
             
@@ -54,12 +54,21 @@ struct HabitsView: View {
         }
     }
     
-    func addSampleGames() async {
+    func addHabits() async {
         let fetchDescriptor = FetchDescriptor<Habit>()
         if let results = try? modelContext.fetchCount(fetchDescriptor), results == 0 {
-            modelContext.insert(Habit(name: "Reading", icon: "book.fill", color: "yellow", frequency: .daily))
-            modelContext.insert(Habit(name: "Exercise", icon: "dumbbell.fill", color: "indigo", frequency: .daily))
-            modelContext.insert(Habit(name: "Drink water", icon: "drop.fill", color: "cyan", frequency: .daily))
+            modelContext.insert(Habit(name: "Reading", icon: "book.fill", color: "orange"))
+            modelContext.insert(Habit(name: "Exercise", icon: "dumbbell.fill", color: "indigo"))
+            modelContext.insert(Habit(name: "Drink water", icon: "drop.fill", color: "cyan"))
+        }
+        if !habits.contains(where: { $0.name == "Water" }) {
+            modelContext.insert(Habit(name: "Water", icon: "number", color: "blue"))
+        }
+        if !habits.contains(where: { $0.name == "Weight" }) {
+            modelContext.insert(Habit(name: "Weight", icon: "number", color: "blue"))
+        }
+        if !habits.contains(where: { $0.name == "Calories" }) {
+            modelContext.insert(Habit(name: "Calories", icon: "number", color: "blue"))
         }
     }
 }

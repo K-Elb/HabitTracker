@@ -16,7 +16,6 @@ struct AddHabitView: View {
     @State private var name = ""
     @State private var selectedIcon = "star.fill"
     @State private var selectedColor = "blue"
-    @State private var selectedFrequency: Habit.Frequency = .daily
     
     let icons = ["star.fill", "heart.fill", "bolt.fill", "book.fill", "dumbbell.fill",
                  "leaf.fill", "drop.fill", "moon.fill", "sun.max.fill", "flame.fill",
@@ -72,16 +71,6 @@ struct AddHabitView: View {
                     }
                     .padding(.vertical, 8)
                 }
-                
-                Section("Frequency") {
-                    Picker("Frequency", selection: $selectedFrequency) {
-                        ForEach(Habit.Frequency.allCases, id: \.self) { frequency in
-                            Label(frequency.rawValue, systemImage: frequency.icon)
-                                .tag(frequency)
-                        }
-                    }
-                    .pickerStyle(.segmented)
-                }
             }
             .navigationTitle("New Habit")
             .navigationBarTitleDisplayMode(.inline)
@@ -94,7 +83,7 @@ struct AddHabitView: View {
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Add") {
-                        let habit = Habit(name: name, icon: selectedIcon, color: selectedColor, frequency: selectedFrequency)
+                        let habit = Habit(name: name, icon: selectedIcon, color: selectedColor)
                         modelContext.insert(habit)
                         dismiss()
                     }

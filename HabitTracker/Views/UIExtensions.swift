@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-// MARK: - Color Extension
 extension Color {
     static func from(string: String) -> Color {
         switch string {

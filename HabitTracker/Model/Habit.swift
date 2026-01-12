@@ -9,47 +9,46 @@ import Foundation
 import SwiftData
 
 @Model
-class Habit: Identifiable {
-    var id: UUID
+class Log {
+    var time: Date
+    var amount: Double
+    
+    init(time: Date, amount: Double) {
+        self.time = time
+        self.amount = amount
+    }
+}
+
+@Model
+class Habit {
     var name: String
     var icon: String
     var color: String
-    var frequency: Frequency
-    var completions: [Date]
+    var completions: [Log]
     var createdDate: Date
     
-    enum Frequency: String, Codable, CaseIterable {
-        case daily = "Daily"
-        case weekly = "Weekly"
-        
-        var icon: String {
-            switch self {
-            case .daily: return "sun.max.fill"
-            case .weekly: return "calendar"
-            }
-        }
-    }
-    
-    init(id: UUID = UUID(), name: String, icon: String, color: String, frequency: Frequency) {
-        self.id = id
+    init(name: String, icon: String, color: String) {
         self.name = name
         self.icon = icon
         self.color = color
-        self.frequency = frequency
         self.completions = []
         self.createdDate = Date()
     }
     
     func isCompletedToday() -> Bool {
-        completions.contains { Calendar.current.isDateInToday($0) }
+        completions.contains { Calendar.current.isDateInToday($0.time) }
     }
     
     func toggleCompletion() {
         if isCompletedToday() {
-            completions.removeAll { Calendar.current.isDateInToday($0) }
+            completions.removeAll { Calendar.current.isDateInToday($0.time) }
         } else {
-            completions.append(Date())
+            completions.append(Log(time: Date(), amount: 1))
         }
+    }
+    
+    func add(_ amount: Double) {
+        completions.append(Log(time: Date(), amount: amount))
     }
     
     func currentStreak() -> Int {
@@ -57,10 +56,10 @@ class Habit: Identifiable {
         var streak = 0
         var currentDate = calendar.startOfDay(for: Date())
         
-        let sortedCompletions = completions.sorted(by: >)
+        let sortedCompletions = completions.sorted(by: { $0.time > $1.time })
         
         for completion in sortedCompletions {
-            let completionDay = calendar.startOfDay(for: completion)
+            let completionDay = calendar.startOfDay(for: completion.time)
             if calendar.isDate(completionDay, inSameDayAs: currentDate) {
                 streak += 1
                 currentDate = calendar.date(byAdding: .day, value: -1, to: currentDate)!

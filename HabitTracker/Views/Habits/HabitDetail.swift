@@ -12,14 +12,9 @@ struct HabitDetail: View {
     let habit: Habit
     
     var body: some View {
-        ZStack(alignment: .top) {
-            LinearGradient(colors: [Color.from(string: habit.color), Color.from(string: habit.color), .wb], startPoint: .top, endPoint: .bottom)
-                .frame(height: 400)
-                .ignoresSafeArea()
-            
+        ScrollView {
             VStack {
-                HabitRow(habit: habit)
-                    .padding()
+                HabitRow(habit: habit, height: 120)
                 
                 ScrollView {
                     VStack {
@@ -33,6 +28,6 @@ struct HabitDetail: View {
 
 #Preview {
     NavigationStack {
-        HabitDetail(habit: Habit(name: "drink water", icon: "drop.fill", color: "mint", frequency: .daily))
+        HabitDetail(habit: Habit(name: "drink water", icon: "drop.fill", color: "mint"))
     }
 }

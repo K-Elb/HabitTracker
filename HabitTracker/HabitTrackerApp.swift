@@ -12,8 +12,29 @@ import SwiftData
 struct HabitTrackerApp: App {
     var body: some Scene {
         WindowGroup {
-            HabitTracker()
-                .modelContainer(for: Habit.self)
+            TabView {
+                Tab {
+                    HabitsView()
+                } label: {
+                    Label("Habits", systemImage: "rectangle.stack")
+                }
+                Tab {
+                    WaterView()
+                } label: {
+                    Label("Water", systemImage: "waterbottle")
+                }
+                Tab {
+                    WeightView()
+                } label: {
+                    Label("Weight", systemImage: "figure")
+                }
+                Tab {
+                    CaloriesView()
+                } label: {
+                    Label("Calories", systemImage: "flame")
+                }
+            }
+            .modelContainer(for: Habit.self)
         }
     }
 }
