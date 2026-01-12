@@ -36,11 +36,10 @@ struct WaterPicker: View {
     var habit: Habit
     
     @State private var height: CGFloat = 0.5
+    @State private var amount: Int = 100
+    @FocusState private var isFocused: Bool
     
     var body: some View {
-        Text("\(Int(height*20)*20) ml")
-            .font(.largeTitle.weight(.light))
-        
         GeometryReader { geometry in
             ZStack(alignment: .bottom) {
                 RoundedRectangle(cornerRadius: 8)
@@ -55,19 +54,32 @@ struct WaterPicker: View {
             .gesture(dragPicker(geometry.size.height))
         }
         
-        Button("Add", systemImage: "waterbottle") {
+        
+        HStack(spacing: 0) {
+            TextField("", value: $amount, format: .number)
+                .focused($isFocused)
+                .keyboardType(.numberPad)
+            
+            Text("ml")
+                .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .font(.system(size: 48).bold())
+        .padding(.horizontal)
+        
+        Button("Add", systemImage: "plus") {
             addWater()
         }
+        .font(.title3.bold())
         .padding()
         .frame(maxWidth: .infinity)
         .background(Color.from(string: "blue"))
         .clipShape(.capsule)
-        .padding()
+        .padding(.horizontal)
     }
     
     func addWater() {
-        let amount = Int(height*20)
         habit.add(Double(amount))
+        isFocused = false
     }
     
     func dragPicker(_ height: CGFloat) -> some Gesture {
@@ -76,6 +88,7 @@ struct WaterPicker: View {
                 let actual = value.location.y/height
                 let percentage = max(0.2, min(0.95, 1-actual))
                 self.height = percentage
+                amount = Int(height*43)*10
             }
     }
 }

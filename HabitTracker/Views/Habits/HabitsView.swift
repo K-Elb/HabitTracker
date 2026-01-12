@@ -23,6 +23,7 @@ struct HabitsView: View {
                 }
             }
             .navigationTitle("Habits")
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem {
                     Button(action: { showingAddHabit = true }) {
@@ -57,18 +58,18 @@ struct HabitsView: View {
     func addHabits() async {
         let fetchDescriptor = FetchDescriptor<Habit>()
         if let results = try? modelContext.fetchCount(fetchDescriptor), results == 0 {
-            modelContext.insert(Habit(name: "Reading", icon: "book.fill", color: "orange"))
+            modelContext.insert(Habit(name: "Reading", icon: "book.fill", color: "mint"))
             modelContext.insert(Habit(name: "Exercise", icon: "dumbbell.fill", color: "indigo"))
-            modelContext.insert(Habit(name: "Drink water", icon: "drop.fill", color: "cyan"))
+            modelContext.insert(Habit(name: "Meditate", icon: "apple.meditate", color: "green"))
         }
         if !habits.contains(where: { $0.name == "Water" }) {
-            modelContext.insert(Habit(name: "Water", icon: "number", color: "blue"))
+            modelContext.insert(Habit(name: "Water", icon: "waterbottle.fill", color: "cyan"))
         }
         if !habits.contains(where: { $0.name == "Weight" }) {
-            modelContext.insert(Habit(name: "Weight", icon: "number", color: "blue"))
+            modelContext.insert(Habit(name: "Weight", icon: "figure", color: "orange"))
         }
         if !habits.contains(where: { $0.name == "Calories" }) {
-            modelContext.insert(Habit(name: "Calories", icon: "number", color: "blue"))
+            modelContext.insert(Habit(name: "Calories", icon: "flame.fill", color: "red"))
         }
     }
 }

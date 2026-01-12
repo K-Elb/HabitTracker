@@ -35,6 +35,8 @@ class Habit {
         self.createdDate = Date()
     }
     
+    var isDefault: Bool { name == "Water" || name == "Calories" || name == "Weight"}
+    
     func isCompletedToday() -> Bool {
         completions.contains { Calendar.current.isDateInToday($0.time) }
     }

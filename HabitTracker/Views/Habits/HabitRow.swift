@@ -11,70 +11,69 @@ import SwiftData
 
 struct HabitRow: View {
     let habit: Habit
-    var height: CGFloat = 60
     
     var body: some View {
-        ZStack(alignment: .top) {
-            if height < 80 {
-                Rectangle()
-                    .fill(Color.from(string: habit.color))
-            } else {
-                LinearGradient(colors: [Color.from(string: habit.color), Color.from(string: habit.color), .wb], startPoint: .top, endPoint: .bottom)
-                    .frame(height: height)
-            }
-            
-            VStack {
-                HStack {
+        VStack(alignment: .leading) {
+            HStack {
+                Image(systemName: habit.icon)
+                    .font(.largeTitle)
+                    .foregroundStyle(.wb)
+                    .padding(8)
+                
+                Spacer()
+                
+                Button(action: { habit.toggleCompletion() }) {
                     Circle()
-                        .fill(.wb)
+                        .foregroundStyle(habit.isCompletedToday() ? .clear : .wb)
                         .frame(width: 48)
                         .overlay {
-                            Image(systemName: habit.icon)
-                                .font(.title2)
-                                .foregroundColor(Color.from(string: habit.color))
+                            Image(systemName: habit.isCompletedToday() ? "checkmark" : "plus")
+                                .font(.title2.bold())
+                                .foregroundStyle(habit.isCompletedToday() ? .wb : Color.from(string: habit.color))
+                                .contentTransition(.symbolEffect(.replace))
                         }
-                    
-                    VStack(alignment: .leading) {
-                        Text(habit.name)
-                            .font(.title2)
-                            .foregroundStyle(.wb)
-                        
-                        HStack {
-                            Label("Total: \(habit.completions.count)", systemImage: "flame.fill")
-                                .font(.caption)
-                            
-                            Label("Streak: \(habit.currentStreak())", systemImage: "flame.fill")
-                                .font(.caption)
-                        }
-                        .foregroundStyle(.thinMaterial)
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.leading, 8)
-                    
-                    Button(action: { habit.toggleCompletion() }) {
-                        Circle()
-                            .fill(habit.isCompletedToday() ? .clear : .wb)
-                            .frame(width: 48)
-                            .overlay {
-                                Image(systemName: habit.isCompletedToday() ? "checkmark" : "plus")
-                                    .font(.title2)
-                                    .foregroundColor(habit.isCompletedToday() ? .wb : Color.from(string: habit.color))
-                                    .contentTransition(.symbolEffect(.replace))
-                            }
-                    }
-                    .buttonStyle(.plain)
                 }
-                .bold()
-                .padding(8)
+                .buttonStyle(.plain)
             }
+            .padding(.bottom)
+            
+            HStack(alignment: .top) {
+                VStack(alignment: .leading) {
+                    Text(habit.name)
+                        .font(.title)
+                    
+                    Spacer()
+                    
+                    HStack {
+                        Label("\(habit.completions.count)", systemImage: "sum")
+                            .font(.caption)
+                        
+                        Label("\(habit.currentStreak())", systemImage: "flame")
+                            .font(.caption)
+                        
+                        Spacer()
+                        
+                        Text("\(habit.createdDate, style: .date)")
+                            .font(.caption)
+                    }
+                }
+                .foregroundStyle(.wb)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.leading, 8)
+            }
+            .bold()
+            .padding(8)
+            .frame(height: 120)
+            .background(.ultraThinMaterial)
+            .clipShape(RoundedRectangle(cornerRadius: 12))
         }
-        .clipShape(RoundedRectangle(cornerRadius: 32))
+        .padding(8)
+        .background(Color.from(string: habit.color))
+        .clipShape(RoundedRectangle(cornerRadius: 16))
         .padding(.horizontal)
     }
 }
 
-
 #Preview {
-    HabitRow(habit: Habit(name: "Reading", icon: "book", color: "orange"), height: 120)
-        .padding()
+    HabitRow(habit: Habit(name: "Reading", icon: "book.fill", color: "orange"))
 }

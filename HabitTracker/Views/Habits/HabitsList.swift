@@ -16,37 +16,44 @@ struct HabitsList: View {
     
     var body: some View {
         ScrollView {
-            ForEach(habits) { habit in
-                if habit.icon != "number" {
-                    NavigationLink {
-                        VStack {
-                            HabitRow(habit: habit, height: 120)
+            VStack(alignment: .leading) {
+//                Text("General")
+//                    .font(.title.bold())
+//                    .padding(.horizontal)
+                
+                ForEach(habits) { habit in
+                    if habit.isDefault {
+                        NavigationLink {
+                            HabitDetail(habit: habit)
                                 .navigationTransition(.zoom(sourceID: habit.id, in: transition))
-                            
-                            ScrollView {
-                                VStack {
-                                    Text(habit.name)
-                                }
-                            }
+                        } label: {
+                            HabitDetail(habit: habit, isDetailed: false)
                         }
-                    } label: {
-                        HabitRow(habit: habit)
-                            .contextMenu {
-                                Button("Delete") {
-                                    deleteHabit(habit)
-                                }
-                            }
+                        .matchedTransitionSource(id: habit.id, in: transition)
                     }
-                    .matchedTransitionSource(id: habit.id, in: transition)
+                }
+                
+//                Text("Health")
+//                    .font(.title.bold())
+//                    .padding(.horizontal)
+                
+                ForEach(habits) { habit in
+                    if !habit.isDefault {
+                        NavigationLink {
+                            HabitDetail(habit: habit)
+                                .navigationTransition(.zoom(sourceID: habit.id, in: transition))
+                        } label: {
+                            HabitDetail(habit: habit, isDetailed: false)
+                        }
+                        .matchedTransitionSource(id: habit.id, in: transition)
+                    }
                 }
             }
         }
     }
-    
-    func deleteHabit(_ habit: Habit) {
-        modelContext.delete(habit)
-    }
 }
+
+
 
 //#Preview {
 //    HabitsList()

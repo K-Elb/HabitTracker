@@ -8,18 +8,16 @@
 import SwiftUI
 
 struct HabitDetail: View {
-    @Environment(\.dismiss) var dismiss
     let habit: Habit
+    var isDetailed: Bool = true
     
     var body: some View {
         ScrollView {
             VStack {
-                HabitRow(habit: habit, height: 120)
+                HabitRow(habit: habit)
                 
-                ScrollView {
-                    VStack {
-                        Text(habit.name)
-                    }
+                if isDetailed {
+                    WeekView(habit: habit)
                 }
             }
         }
