@@ -35,7 +35,6 @@ struct HabitRow: View {
                 }
                 .buttonStyle(.plain)
             }
-            .padding(.bottom)
             
             HStack(alignment: .top) {
                 VStack(alignment: .leading) {
@@ -56,21 +55,53 @@ struct HabitRow: View {
                         Text("\(habit.createdDate, style: .date)")
                             .font(.caption)
                     }
+                    .padding(.horizontal, 4)
                 }
                 .foregroundStyle(.wb)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.leading, 8)
             }
             .bold()
-            .padding(8)
+            .padding(12)
             .frame(height: 120)
             .background(.ultraThinMaterial)
-            .clipShape(RoundedRectangle(cornerRadius: 12))
+            .clipShape(RoundedRectangle(cornerRadius: 26))
         }
         .padding(8)
         .background(Color.from(string: habit.color))
-        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .clipShape(RoundedRectangle(cornerRadius: 32))
         .padding(.horizontal)
+    }
+}
+
+struct MeshBackground: View {
+    let color: Color
+    var colors: [Color] { Array(repeating: color.opacity(Double.random(in: 0.2...1.0)), count: 9) }
+    @State var point: SIMD2<Float> = [0.5, 0.5]
+    
+    var body: some View {
+        if #available(iOS 18.0, *) {
+            MeshGradient(width: 3,
+                         height: 3,
+                         points: [[0.0, 0.0], [0.5, 0.0], [1.0, 0.0],
+                                  [0.0, 0.5], point, [1.0, 0.5],
+                                  [0.0, 1.0], [0.5, 1.0], [1.0, 1.0]],
+                         colors: colors)
+                .ignoresSafeArea()
+                .onAppear {
+                    startTimer()
+                }
+        } else {
+            // Fallback on earlier versions
+        }
+    }
+    
+    private func startTimer() {
+        Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
+            withAnimation(.easeInOut(duration: 2.0)) {
+                point = [Float(.random(in: 0.2...0.8)), Float(.random(in: 0.2...0.8))]
+//                print(point)
+            }
+        }
     }
 }
 

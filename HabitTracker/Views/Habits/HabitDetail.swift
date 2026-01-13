@@ -18,6 +18,8 @@ struct HabitDetail: View {
                 
                 if isDetailed {
                     WeekView(habit: habit)
+                    
+                    YearView(color: Color.from(string: habit.color))
                 }
             }
         }

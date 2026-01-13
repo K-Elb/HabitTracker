@@ -40,25 +40,25 @@ struct WaterPicker: View {
     @FocusState private var isFocused: Bool
     
     var body: some View {
-        GeometryReader { geometry in
-            ZStack(alignment: .bottom) {
-                RoundedRectangle(cornerRadius: 8)
-                    .padding()
-                    .foregroundStyle(.ultraThinMaterial)
-                
-                RoundedRectangle(cornerRadius: 8)
-                    .padding()
-                    .foregroundStyle(Color.from(string: "blue"))
-                    .frame(height: geometry.size.height * height)
-            }
-            .gesture(dragPicker(geometry.size.height))
+        ZStack(alignment: .bottom) {
+            RoundedRectangle(cornerRadius: 8)
+                .padding()
+                .foregroundStyle(.ultraThinMaterial)
+            
+            RoundedRectangle(cornerRadius: 8)
+                .padding()
+                .foregroundStyle(Color.from(string: "blue"))
+                .frame(height: 320 * height)
         }
+        .frame(maxWidth: 120, maxHeight: 320)
+        .gesture(dragPicker())
         
         
         HStack(spacing: 0) {
             TextField("", value: $amount, format: .number)
                 .focused($isFocused)
                 .keyboardType(.numberPad)
+                .scrollDismissesKeyboard(.immediately)
             
             Text("ml")
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -82,12 +82,12 @@ struct WaterPicker: View {
         isFocused = false
     }
     
-    func dragPicker(_ height: CGFloat) -> some Gesture {
+    func dragPicker() -> some Gesture {
         DragGesture()
             .onChanged { value in
-                let actual = value.location.y/height
+                let actual = value.location.y/320
                 let percentage = max(0.2, min(0.95, 1-actual))
-                self.height = percentage
+                height = percentage
                 amount = Int(height*43)*10
             }
     }

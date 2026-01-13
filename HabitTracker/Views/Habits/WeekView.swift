@@ -15,21 +15,27 @@ struct WeekView: View {
         HStack {
             ForEach(dates, id: \.self) { date in
                 VStack {
-                    let foo = habit.completions.contains { $0.time.formatted(date: .abbreviated, time: .omitted) == date.formatted(date: .abbreviated, time: .omitted) }
+                    let done = habit.completions.contains { $0.time.formatted(date: .abbreviated, time: .omitted) == date.formatted(date: .abbreviated, time: .omitted) }
                     Circle()
-                        .fill(foo ? Color.from(string: habit.color) : .clear)
-                        .frame(width: 40)
+                        .fill(done ? .clear : .wb)
+                        .frame(width: UIScreen.main.bounds.width/10)
                         .overlay(
                             Text(dayFormatter.string(from: date))
                                 .font(.headline)
-                                .foregroundColor(foo ? .white : Color.from(string: habit.color))
+                                .foregroundStyle(done ? .wb: .accent)
                         )
 
                     Text(shortDateFormatter.string(from: date))
                         .font(.caption.bold())
+                        .foregroundColor(.wb)
                 }
             }
         }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical)
+        .background(Color.from(string: habit.color))
+        .clipShape(RoundedRectangle(cornerRadius: 32))
+        .padding(.horizontal)
     }
 
     // MARK: - Date Helpers
