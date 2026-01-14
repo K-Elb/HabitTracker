@@ -27,12 +27,19 @@ struct YearTaskGridView: View {
     private let months = ["J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"]
     
     var color: Color { Color.from(string: habit.color) }
+    var colorRange: [Color] {
+        if habit.dailyGoal == 1 {
+            return [color]
+        } else {
+            return [color.opacity(0.2), color.opacity(0.6), color]
+        }
+    }
 
     var body: some View {
         VStack {
             HStack(spacing: (UIScreen.main.bounds.width)/18) {
-                ForEach(months, id: \.self) { month in
-                    Text(month)
+                ForEach(months.indices, id: \.self) { index in
+                    Text(months[index])
                 }
             }
             .offset(y: 12)
@@ -67,7 +74,7 @@ struct YearTaskGridView: View {
             .chartYAxis(.hidden)
             .chartXScale(domain: 0...13)
             .chartYScale(domain: -32...0)
-            .chartForegroundStyleScale(range: [color.opacity(0.2), color.opacity(0.6), color])
+            .chartForegroundStyleScale(range: colorRange)
         }
     }
 

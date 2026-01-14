@@ -21,7 +21,7 @@ class Log {
 
 @Model
 class Habit {
-    var name: String
+    @Attribute(.unique) var name: String
     var icon: String
     var color: String
     var completions: [Log]

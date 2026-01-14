@@ -28,7 +28,7 @@ struct HabitRow: View {
                 Button(action: { addHabitEntry() }) {
                     Circle()
                         .foregroundStyle(habit.isCompletedToday() ? .clear : .wb)
-                        .frame(width: 48)
+                        .aspectRatio(1, contentMode: .fit)
                         .overlay {
                             Image(systemName: habit.isCompletedToday() ? "checkmark" : "plus")
                                 .font(.title2.bold())
@@ -44,7 +44,7 @@ struct HabitRow: View {
                     }
                 }
             }
-            .frame(height: 56)
+            .frame(height: 48)
             
             HStack(alignment: .top) {
                 VStack(alignment: .leading) {
@@ -70,7 +70,7 @@ struct HabitRow: View {
             }
             .bold()
             .padding(12)
-            .frame(height: 136)
+            .frame(height: 120)
             .background(.wb)
             .clipShape(RoundedRectangle(cornerRadius: 26))
             

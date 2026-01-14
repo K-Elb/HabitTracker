@@ -63,7 +63,7 @@ struct HabitsView: View {
             modelContext.insert(Habit(name: "Meditate", icon: "apple.meditate", color: "green"))
         }
         if !habits.contains(where: { $0.name == "Water" }) {
-            modelContext.insert(Habit(name: "Water", icon: "waterbottle.fill", color: "cyan", dailyGoal: 500))
+            modelContext.insert(Habit(name: "Water", icon: "waterbottle.fill", color: "cyan", dailyGoal: 2500))
         }
         if !habits.contains(where: { $0.name == "Weight" }) {
             modelContext.insert(Habit(name: "Weight", icon: "figure", color: "orange"))

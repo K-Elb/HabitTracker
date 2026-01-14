@@ -10,9 +10,7 @@ import SwiftUI
 struct HabitDetail: View {
     var habit: Habit
     var isDetailed: Bool = true
-    
-    @State private var isAdding: Bool = false
-    
+        
     var body: some View {
         ScrollView(showsIndicators: false) {
             VStack {
@@ -26,12 +24,9 @@ struct HabitDetail: View {
         .toolbar {
             if isDetailed {
                 ToolbarItem {
-                    EditButtons(habit: habit, isAdding: $isAdding)
+                    EditButtons(habit: habit)
                 }
             }
-        }
-        .sheet(isPresented: $isAdding) {
-            DateSelectorView(habit: habit)
         }
     }
 }
@@ -39,22 +34,33 @@ struct HabitDetail: View {
 struct EditButtons: View {
     var habit: Habit
     
-    @Binding var isAdding: Bool
+    @State private var isAdding: Bool = false
+    @State private var isEditingHabit: Bool = false
     
     var body: some View {
         Menu {
+            Button(action: { isEditingHabit = true }) {
+                Label("Edit Habit", systemImage: "pencil")
+            }
+            
+            Divider()
+            
             Button(action: { isAdding = true }) {
                 Label("Add a missing entry", systemImage: "plus")
             }
-            .sheet(isPresented: $isAdding) {
-                DateSelectorView(habit: habit)
-            }
+            
             
             Button(action: {}) {
                 Label("Delete/Edit", systemImage: "pencil")
             }
         } label: {
             Image(systemName: "ellipsis")
+        }
+        .sheet(isPresented: $isAdding) {
+            DateSelectorView(habit: habit)
+        }
+        .sheet(isPresented: $isEditingHabit) {
+            AddHabitView(habit: habit, isEditing: true)
         }
     }
 }

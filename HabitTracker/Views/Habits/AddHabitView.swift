@@ -13,88 +13,104 @@ struct AddHabitView: View {
     @Environment(\.modelContext) var modelContext
     @Environment(\.dismiss) var dismiss
     
-    @State private var name = ""
-    @State private var selectedIcon = "star.fill"
-    @State private var selectedColor = "blue"
-    @State private var dailyGoal = 1
+    @State var habit: Habit = Habit(name: "", icon: "checkmark", color: "blue", dailyGoal: 1)
+    var isEditing: Bool = false
     
-    let icons = ["star.fill", "heart.fill", "bolt.fill", "book.fill", "dumbbell.fill",
-                 "leaf.fill", "drop.fill", "moon.fill", "sun.max.fill", "flame.fill",
-                 "brain.head.profile", "figure.walk", "bed.double.fill", "fork.knife"]
+    @State private var c: Color = Color(red: 0, green: 0, blue: 0)
     
-    let colors = ["blue", "green", "orange", "red", "purple", "pink", "yellow", "indigo", "teal"]
+    let habitSymbols: [String] = [
+        "checkmark", "circle.fill", "star.fill", "heart.fill", "flag.fill",
+        "bookmark.fill", "target", "trophy.fill", "sparkles", "bolt.fill",
+        "clock.fill", "alarm.fill", "calendar", "timer", "hourglass.bottomhalf.fill",
+        "repeat", "arrow.triangle.2.circlepath", "stopwatch.fill", "sunrise.fill", "sunset.fill",
+        "figure.walk", "figure.run", "figure.yoga", "figure.mind.and.body", "heart.text.square.fill",
+        "lungs.fill", "drop.fill", "pills.fill", "bed.double.fill", "brain.head.profile.fill",
+        "dumbbell.fill", "flame.fill", "bicycle", "sportscourt.fill", "figure.strengthtraining.traditional",
+        "figure.cooldown", "figure.outdoor.cycle", "figure.hiking", "figure.stairs", "figure.flexibility",
+        "fork.knife", "leaf.fill", "carrot.fill", "cup.and.saucer.fill", "waterbottle.fill",
+        "takeoutbag.and.cup.and.straw.fill", "fish.fill", "apple.logo", "mug.fill", "cart.fill",
+        "moon.fill", "cloud.sun.fill", "face.smiling.fill", "face.dashed.fill", "wind",
+        "waveform.path.ecg", "brain.fill", "ear.fill", "eye.fill", "nose.fill",
+        "book.fill", "books.vertical.fill", "pencil", "list.bullet", "checklist",
+        "chart.bar.fill", "chart.line.uptrend.xyaxis", "graduationcap.fill", "keyboard.fill", "lightbulb.fill",
+        "house.fill", "briefcase.fill", "bag.fill", "phone.fill", "lock.fill",
+        "key.fill", "car.fill", "bus.fill", "airplane", "globe.americas.fill"
+    ]
+    
+    let colors = ["blue", "green", "orange", "red", "purple", "yellow", "indigo", "teal"]
     
     var body: some View {
         NavigationStack {
             Form {
                 Section("Details") {
-                    TextField("Habit Name", text: $name)
-                }
-                
-                Section("Icon") {
-                    LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7), spacing: 16) {
-                        ForEach(icons, id: \.self) { icon in
-                            Button(action: { selectedIcon = icon }) {
-                                ZStack {
-                                    Circle()
-                                        .fill(selectedIcon == icon ? Color.from(string: selectedColor).opacity(0.2) : Color.gray.opacity(0.1))
-                                        .frame(width: 44, height: 44)
-                                    
-                                    Image(systemName: icon)
-                                        .font(.system(size: 20))
-                                        .foregroundColor(selectedIcon == icon ? Color.from(string: selectedColor) : .gray)
-                                }
-                            }
-                            .buttonStyle(.plain)
-                        }
-                    }
-                    .padding(.vertical, 8)
-                }
-                
-                Section("Color") {
-                    LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 9), spacing: 16) {
-                        ForEach(colors, id: \.self) { color in
-                            Button(action: { selectedColor = color }) {
-                                ZStack {
-                                    Circle()
-                                        .fill(Color.from(string: color))
-                                        .frame(width: 36, height: 36)
-                                    
-                                    if selectedColor == color {
-                                        Image(systemName: "checkmark")
-                                            .font(.system(size: 16, weight: .bold))
-                                            .foregroundColor(.white)
-                                    }
-                                }
-                            }
-                            .buttonStyle(.plain)
-                        }
-                    }
-                    .padding(.vertical, 8)
+                    TextField("Habit Name", text: $habit.name)
                 }
                 
                 Section("Daily Goal") {
-                    TextField("Enter the daily goal", value: $dailyGoal, format: .number)
+                    TextField("Enter the daily goal", value: $habit.dailyGoal, format: .number)
                         .keyboardType(.numberPad)
+                }
+                
+                Section("Color") {
+                    LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 8)) {
+                        ForEach(colors, id: \.self) { c in
+                            Button(action: { habit.color = c }) {
+                                Circle()
+                                    .fill(Color.from(string: c))
+                                    .aspectRatio(1, contentMode: .fit)
+                                    .overlay {
+                                        if habit.color == c {
+                                            Image(systemName: "checkmark")
+                                                .bold()
+                                                .foregroundColor(.white)
+                                        }
+                                    }
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
+//                    ColorPicker("Choose color", selection: $c)
+//                    Text("\(c.hashValue)")
+//                        .foregroundStyle(c)
+                }
+                
+                let color = Color.from(string: habit.color)
+                Section("Icon") {
+                    LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 8)) {
+                        ForEach(habitSymbols, id: \.self) { icon in
+                            Button(action: { habit.icon = icon }) {
+                                ZStack {
+                                    Circle()
+                                        .fill(habit.icon == icon ? color.opacity(0.2) : Color.gray.opacity(0.1))
+                                        .aspectRatio(1, contentMode: .fit)
+                                    
+                                    Image(systemName: icon)
+                                        .foregroundColor(habit.icon == icon ? color : .gray)
+                                }
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
                 }
             }
             .navigationTitle("New Habit")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
+                ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") {
                         dismiss()
                     }
                 }
                 
-                ToolbarItem(placement: .navigationBarTrailing) {
+                ToolbarItem {
                     Button("Add") {
-                        let habit = Habit(name: name, icon: selectedIcon, color: selectedColor)
-                        modelContext.insert(habit)
+                        if !isEditing {
+                            modelContext.insert(habit)
+                        }
                         dismiss()
                     }
-                    .fontWeight(.semibold)
-                    .disabled(name.isEmpty)
+                    .bold()
+                    .disabled(habit.name.isEmpty || habit.dailyGoal == 0)
                 }
             }
         }
@@ -104,3 +120,8 @@ struct AddHabitView: View {
 #Preview {
     AddHabitView()
 }
+
+
+
+
+

@@ -32,7 +32,7 @@ struct WeekView: View {
             }
         }
         .frame(maxWidth: .infinity)
-        .padding(.top)
+        .padding(.top, 4)
     }
 
     // MARK: - Date Helpers
