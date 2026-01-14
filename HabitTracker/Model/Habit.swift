@@ -26,31 +26,43 @@ class Habit {
     var color: String
     var completions: [Log]
     var createdDate: Date
+    var dailyGoal: Double
     
-    init(name: String, icon: String, color: String) {
+    init(name: String, icon: String, color: String, dailyGoal: Double = 1.0) {
         self.name = name
         self.icon = icon
         self.color = color
         self.completions = []
         self.createdDate = Date()
+        self.dailyGoal = dailyGoal
     }
     
     var isDefault: Bool { name == "Water" || name == "Calories" || name == "Weight"}
     
     func isCompletedToday() -> Bool {
-        completions.contains { Calendar.current.isDateInToday($0.time) }
+//        completions.contains { Calendar.current.isDateInToday($0.time) }
+        totalOnThisDay() >= dailyGoal
     }
     
-    func toggleCompletion() {
-        if isCompletedToday() {
+    func totalOnThisDay(_ date: Date = Date()) -> Double {
+        var total: Double = 0.0
+        let calender = Calendar.current
+        
+        for completion in completions {
+            if calender.isDate(completion.time, inSameDayAs: date) {
+                total += completion.amount
+            }
+        }
+        
+        return total
+    }
+    
+    func addCompletion(_ date: Date, of amount: Double = 1.0) {
+        if isCompletedToday(), dailyGoal == 1.0 {
             completions.removeAll { Calendar.current.isDateInToday($0.time) }
         } else {
-            completions.append(Log(time: Date(), amount: 1))
+            completions.append(Log(time: date, amount: amount))
         }
-    }
-    
-    func add(_ amount: Double) {
-        completions.append(Log(time: Date(), amount: amount))
     }
     
     func currentStreak() -> Int {

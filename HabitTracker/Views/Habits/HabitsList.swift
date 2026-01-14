@@ -14,13 +14,11 @@ struct HabitsList: View {
     
     @Namespace var transition
     
+    @State private var expanded: Bool = false
+    
     var body: some View {
-        ScrollView {
+        ScrollView(showsIndicators: false) {
             VStack(alignment: .leading) {
-//                Text("General")
-//                    .font(.title.bold())
-//                    .padding(.horizontal)
-                
                 ForEach(habits) { habit in
                     if habit.isDefault {
                         NavigationLink {
@@ -32,10 +30,6 @@ struct HabitsList: View {
                         .matchedTransitionSource(id: habit.id, in: transition)
                     }
                 }
-                
-//                Text("Health")
-//                    .font(.title.bold())
-//                    .padding(.horizontal)
                 
                 ForEach(habits) { habit in
                     if !habit.isDefault {

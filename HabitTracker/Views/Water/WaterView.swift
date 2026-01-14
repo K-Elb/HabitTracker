@@ -32,6 +32,7 @@ struct WaterView: View {
 
 struct WaterPicker: View {
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.dismiss) var dismiss
     
     var habit: Habit
     
@@ -78,8 +79,9 @@ struct WaterPicker: View {
     }
     
     func addWater() {
-        habit.add(Double(amount))
+        habit.addCompletion(Date(),of: Double(amount))
         isFocused = false
+        dismiss()
     }
     
     func dragPicker() -> some Gesture {

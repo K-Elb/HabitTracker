@@ -16,6 +16,7 @@ struct AddHabitView: View {
     @State private var name = ""
     @State private var selectedIcon = "star.fill"
     @State private var selectedColor = "blue"
+    @State private var dailyGoal = 1
     
     let icons = ["star.fill", "heart.fill", "bolt.fill", "book.fill", "dumbbell.fill",
                  "leaf.fill", "drop.fill", "moon.fill", "sun.max.fill", "flame.fill",
@@ -71,6 +72,11 @@ struct AddHabitView: View {
                     }
                     .padding(.vertical, 8)
                 }
+                
+                Section("Daily Goal") {
+                    TextField("Enter the daily goal", value: $dailyGoal, format: .number)
+                        .keyboardType(.numberPad)
+                }
             }
             .navigationTitle("New Habit")
             .navigationBarTitleDisplayMode(.inline)
@@ -93,4 +99,8 @@ struct AddHabitView: View {
             }
         }
     }
+}
+
+#Preview {
+    AddHabitView()
 }

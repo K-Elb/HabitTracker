@@ -11,6 +11,9 @@ import SwiftData
 
 struct HabitRow: View {
     let habit: Habit
+    var isDetailed: Bool = false
+    
+    @State private var isShowingSheet: Bool = false
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -22,7 +25,7 @@ struct HabitRow: View {
                 
                 Spacer()
                 
-                Button(action: { habit.toggleCompletion() }) {
+                Button(action: { addHabitEntry() }) {
                     Circle()
                         .foregroundStyle(habit.isCompletedToday() ? .clear : .wb)
                         .frame(width: 48)
@@ -34,7 +37,14 @@ struct HabitRow: View {
                         }
                 }
                 .buttonStyle(.plain)
+                .sheet(isPresented: $isShowingSheet) {
+                    switch habit.name {
+                    case "Water": WaterPicker(habit: habit)
+                    default: EmptyView()
+                    }
+                }
             }
+            .frame(height: 56)
             
             HStack(alignment: .top) {
                 VStack(alignment: .leading) {
@@ -44,32 +54,41 @@ struct HabitRow: View {
                     Spacer()
                     
                     HStack {
-                        Label("\(habit.completions.count)", systemImage: "sum")
-                            .font(.caption)
-                        
                         Label("\(habit.currentStreak())", systemImage: "flame")
-                            .font(.caption)
                         
                         Spacer()
                         
-                        Text("\(habit.createdDate, style: .date)")
-                            .font(.caption)
+                        if habit.dailyGoal > 1 {
+                            Text("\(Int(habit.totalOnThisDay())) / \(Int(habit.dailyGoal))")
+                                .bold()
+                        }
                     }
                     .padding(.horizontal, 4)
                 }
-                .foregroundStyle(.wb)
+                .foregroundStyle(Color.from(string: habit.color))
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
             .bold()
             .padding(12)
-            .frame(height: 120)
-            .background(.ultraThinMaterial)
+            .frame(height: 136)
+            .background(.wb)
             .clipShape(RoundedRectangle(cornerRadius: 26))
+            
+            if isDetailed {
+                WeekView(habit: habit)
+            }
         }
         .padding(8)
         .background(Color.from(string: habit.color))
         .clipShape(RoundedRectangle(cornerRadius: 32))
         .padding(.horizontal)
+    }
+    
+    func addHabitEntry() {
+        switch habit.name {
+        case "Water": isShowingSheet = true
+        default: habit.addCompletion(Date())
+        }
     }
 }
 
