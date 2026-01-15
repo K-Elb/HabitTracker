@@ -39,9 +39,9 @@ class Habit {
     
     var isDefault: Bool { name == "Water" || name == "Calories" || name == "Weight"}
     
-    func isCompletedToday() -> Bool {
+    func isCompletedOnThisDay(_ date: Date = Date()) -> Bool {
 //        completions.contains { Calendar.current.isDateInToday($0.time) }
-        totalOnThisDay() >= dailyGoal
+        totalOnThisDay(date) >= dailyGoal
     }
     
     func totalOnThisDay(_ date: Date = Date()) -> Double {
@@ -58,8 +58,8 @@ class Habit {
     }
     
     func addCompletion(_ date: Date, of amount: Double = 1.0) {
-        if isCompletedToday(), dailyGoal == 1.0 {
-            completions.removeAll { Calendar.current.isDateInToday($0.time) }
+        if isCompletedOnThisDay(date), dailyGoal == 1.0 {
+            completions.removeAll { Calendar.current.isDate($0.time, inSameDayAs: date) }
         } else {
             completions.append(Log(time: date, amount: amount))
         }

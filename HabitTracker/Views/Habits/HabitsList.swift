@@ -10,7 +10,7 @@ import SwiftData
 
 struct HabitsList: View {
     @Environment(\.modelContext) private var modelContext
-    @Query(sort: \Habit.name) private var habits: [Habit]
+    @Query(sort: \Habit.name, order: .reverse) var habits: [Habit]
     
     @Namespace var transition
     

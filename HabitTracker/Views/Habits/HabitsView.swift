@@ -61,16 +61,20 @@ struct HabitsView: View {
             modelContext.insert(Habit(name: "Reading", icon: "book.fill", color: "mint"))
             modelContext.insert(Habit(name: "Exercise", icon: "dumbbell.fill", color: "indigo"))
             modelContext.insert(Habit(name: "Meditate", icon: "apple.meditate", color: "green"))
-        }
-        if !habits.contains(where: { $0.name == "Water" }) {
+            
             modelContext.insert(Habit(name: "Water", icon: "waterbottle.fill", color: "cyan", dailyGoal: 2500))
-        }
-        if !habits.contains(where: { $0.name == "Weight" }) {
             modelContext.insert(Habit(name: "Weight", icon: "figure", color: "orange"))
-        }
-        if !habits.contains(where: { $0.name == "Calories" }) {
             modelContext.insert(Habit(name: "Calories", icon: "flame.fill", color: "red", dailyGoal: 2200))
         }
+//        if !habits.contains(where: { $0.name == "Water" }) {
+//            modelContext.insert(Habit(name: "Water", icon: "waterbottle.fill", color: "cyan", dailyGoal: 2500))
+//        }
+//        if !habits.contains(where: { $0.name == "Weight" }) {
+//            modelContext.insert(Habit(name: "Weight", icon: "figure", color: "orange"))
+//        }
+//        if !habits.contains(where: { $0.name == "Calories" }) {
+//            modelContext.insert(Habit(name: "Calories", icon: "flame.fill", color: "red", dailyGoal: 2200))
+//        }
     }
 }
 

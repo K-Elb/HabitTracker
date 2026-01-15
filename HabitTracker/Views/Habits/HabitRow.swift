@@ -14,6 +14,7 @@ struct HabitRow: View {
     var isDetailed: Bool = false
     
     @State private var isShowingSheet: Bool = false
+    @State private var selectedDate: Date = Date()
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -27,19 +28,19 @@ struct HabitRow: View {
                 
                 Button(action: { addHabitEntry() }) {
                     Circle()
-                        .foregroundStyle(habit.isCompletedToday() ? .clear : .wb)
+                        .foregroundStyle(habit.isCompletedOnThisDay(selectedDate) ? .clear : .wb)
                         .aspectRatio(1, contentMode: .fit)
                         .overlay {
-                            Image(systemName: habit.isCompletedToday() ? "checkmark" : "plus")
+                            Image(systemName: habit.isCompletedOnThisDay(selectedDate) ? "checkmark" : "plus")
                                 .font(.title2.bold())
-                                .foregroundStyle(habit.isCompletedToday() ? .wb : Color.from(string: habit.color))
+                                .foregroundStyle(habit.isCompletedOnThisDay(selectedDate) ? .wb : Color.from(string: habit.color))
                                 .contentTransition(.symbolEffect(.replace))
                         }
                 }
                 .buttonStyle(.plain)
                 .sheet(isPresented: $isShowingSheet) {
                     switch habit.name {
-                    case "Water": WaterPicker(habit: habit)
+                    case "Water", "Calories", "Weight": DataPicker(habit: habit)
                     default: EmptyView()
                     }
                 }
@@ -50,11 +51,16 @@ struct HabitRow: View {
                 VStack(alignment: .leading) {
                     Text(habit.name)
                         .font(.title)
+                        .multilineTextAlignment(.leading)
+                        .lineLimit(2)
                     
                     Spacer()
                     
                     HStack {
-                        Label("\(habit.currentStreak())", systemImage: "flame")
+                        Label("\(habit.currentStreak())", systemImage: "flame.fill")
+                        
+                        Label("\(habit.completions.count)", systemImage: "number")
+
                         
                         Spacer()
                         
@@ -69,13 +75,13 @@ struct HabitRow: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
             .bold()
-            .padding(12)
-            .frame(height: 120)
+            .padding(16)
+            .frame(height: 160)
             .background(.wb)
             .clipShape(RoundedRectangle(cornerRadius: 26))
             
             if isDetailed {
-                WeekView(habit: habit)
+                WeekView(habit: habit, selectedDate: $selectedDate)
             }
         }
         .padding(8)
@@ -86,8 +92,8 @@ struct HabitRow: View {
     
     func addHabitEntry() {
         switch habit.name {
-        case "Water": isShowingSheet = true
-        default: habit.addCompletion(Date())
+        case "Water", "Calories", "Weight": isShowingSheet = true
+        default: habit.addCompletion(selectedDate)
         }
     }
 }

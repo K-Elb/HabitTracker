@@ -6,10 +6,13 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct HabitDetail: View {
     var habit: Habit
     var isDetailed: Bool = true
+    
+    @State private var selectedDate: Date = Date()
         
     var body: some View {
         ScrollView(showsIndicators: false) {
@@ -32,6 +35,7 @@ struct HabitDetail: View {
 }
 
 struct EditButtons: View {
+    @Environment(\.modelContext) var modelContext
     var habit: Habit
     
     @State private var isAdding: Bool = false
@@ -41,6 +45,10 @@ struct EditButtons: View {
         Menu {
             Button(action: { isEditingHabit = true }) {
                 Label("Edit Habit", systemImage: "pencil")
+            }
+            
+            Button(action: { modelContext.delete(habit) }) {
+                Label("Delete Habit", systemImage: "trash")
             }
             
             Divider()
