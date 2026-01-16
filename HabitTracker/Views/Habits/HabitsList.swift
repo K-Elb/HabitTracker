@@ -10,7 +10,7 @@ import SwiftData
 
 struct HabitsList: View {
     @Environment(\.modelContext) private var modelContext
-    @Query(sort: \Habit.name, order: .reverse) var habits: [Habit]
+    var habits: [Habit]
     
     @Namespace var transition
     
@@ -20,27 +20,13 @@ struct HabitsList: View {
         ScrollView(showsIndicators: false) {
             VStack(alignment: .leading) {
                 ForEach(habits) { habit in
-                    if habit.isDefault {
-                        NavigationLink {
-                            HabitDetail(habit: habit)
-                                .navigationTransition(.zoom(sourceID: habit.id, in: transition))
-                        } label: {
-                            HabitDetail(habit: habit, isDetailed: false)
-                        }
-                        .matchedTransitionSource(id: habit.id, in: transition)
+                    NavigationLink {
+                        HabitDetail(habit: habit)
+                            .navigationTransition(.zoom(sourceID: habit.id, in: transition))
+                    } label: {
+                        HabitDetail(habit: habit, isDetailed: false)
                     }
-                }
-                
-                ForEach(habits) { habit in
-                    if !habit.isDefault {
-                        NavigationLink {
-                            HabitDetail(habit: habit)
-                                .navigationTransition(.zoom(sourceID: habit.id, in: transition))
-                        } label: {
-                            HabitDetail(habit: habit, isDetailed: false)
-                        }
-                        .matchedTransitionSource(id: habit.id, in: transition)
-                    }
+                    .matchedTransitionSource(id: habit.id, in: transition)
                 }
             }
         }

@@ -21,6 +21,7 @@ class Log {
 
 @Model
 class Habit {
+    var sortOrder: Int
     @Attribute(.unique) var name: String
     var icon: String
     var color: String
@@ -28,7 +29,8 @@ class Habit {
     var createdDate: Date
     var dailyGoal: Double
     
-    init(name: String, icon: String, color: String, dailyGoal: Double = 1.0) {
+    init(sortOrder: Int, name: String, icon: String, color: String, dailyGoal: Double = 1.0) {
+        self.sortOrder = sortOrder
         self.name = name
         self.icon = icon
         self.color = color
@@ -77,7 +79,13 @@ class Habit {
             if calendar.isDate(completionDay, inSameDayAs: currentDate) {
                 streak += 1
                 currentDate = calendar.date(byAdding: .day, value: -1, to: currentDate)!
-            } else if completionDay < currentDate {
+            } else if currentDate == calendar.startOfDay(for: Date()) {
+                currentDate = calendar.date(byAdding: .day, value: -1, to: currentDate)!
+                if calendar.isDate(completionDay, inSameDayAs: currentDate) {
+                    streak += 1
+                    currentDate = calendar.date(byAdding: .day, value: -1, to: currentDate)!
+                }
+            } else {
                 break
             }
         }

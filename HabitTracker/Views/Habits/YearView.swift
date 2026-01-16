@@ -15,10 +15,9 @@ struct TaskCompletion {
     let value: Double
 }
 
-struct YearTaskGridView: View {
+struct YearView: View {
     let habit: Habit
-    let year: Int
-    let completedDates: Set<Date>
+    @Binding var year: Int
 
     private let calendar = Calendar.current
     private let circleSize: CGFloat = 10
@@ -34,9 +33,40 @@ struct YearTaskGridView: View {
             return [color.opacity(0.2), color.opacity(0.6), color]
         }
     }
+    
+    var oldestYear: Int {
+        let oldestDate = habit.completions.map(\.time).min() ?? Date()
+        return calendar.component(.year, from: oldestDate)
+    }
+    var latestYear: Int {
+        calendar.component(.year, from: Date())
+    }
+
 
     var body: some View {
         VStack {
+            HStack {
+                if year > oldestYear {
+                    Button(action: { year -= 1 }) {
+                        Image(systemName: "chevron.backward")
+                    }
+                }
+                Spacer()
+                if year < latestYear {
+                    Button(action: { year += 1 }) {
+                        Image(systemName: "chevron.forward")
+                    }
+                }
+                    
+            }
+            .padding(.horizontal, 24)
+            .padding(.top, 8)
+            .overlay {
+                Text(String(year))
+            }
+            .bold()
+            .foregroundStyle(color)
+            
             HStack(spacing: (UIScreen.main.bounds.width)/18) {
                 ForEach(months.indices, id: \.self) { index in
                     Text(months[index])
@@ -56,7 +86,7 @@ struct YearTaskGridView: View {
                         height: w
                     )
                     .cornerRadius(16)
-                    .foregroundStyle(by: .value("Number", data.value))
+                    .foregroundStyle(by: .value("Number", min(habit.dailyGoal, data.value)))
                 } else {
                     RectangleMark (
                         x: .value("x", data.x),
@@ -75,6 +105,8 @@ struct YearTaskGridView: View {
             .chartXScale(domain: 0...13)
             .chartYScale(domain: -32...0)
             .chartForegroundStyleScale(range: colorRange)
+            
+            
         }
     }
 
@@ -93,7 +125,7 @@ struct YearTaskGridView: View {
                     date: current,
                     x: calendar.component(.month, from: current),
                     y: -calendar.component(.day, from: current),
-                    value: habit.totalOnThisDay(current) //Double(Int.random(in: 0...3))
+                    value: habit.totalOnThisDay(current) //Double(Int.random(in: 0...4))
                 )
             )
             current = calendar.date(byAdding: .day, value: 1, to: current)!
@@ -103,25 +135,7 @@ struct YearTaskGridView: View {
     }
 }
 
-struct YearView: View {
-    let habit: Habit
-    
-    var body: some View {
-        YearTaskGridView(
-            habit: habit,
-            year: 2026,
-            completedDates: sampleCompletedDates
-        )
-    }
-
-    private var sampleCompletedDates: Set<Date> {
-        let calendar = Calendar.current
-        return Set((1...100).compactMap {
-            calendar.date(byAdding: .day, value: $0, to: Date())
-        })
-    }
-}
-
 #Preview {
-    YearView(habit: Habit(name: "Test", icon: "flame", color: "red"))
+    @Previewable @State var year = 2026
+    YearView(habit: Habit(sortOrder: 0, name: "Test", icon: "flame", color: "red", dailyGoal: 3.0), year: $year)
 }

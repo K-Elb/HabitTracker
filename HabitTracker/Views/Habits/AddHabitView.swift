@@ -13,7 +13,9 @@ struct AddHabitView: View {
     @Environment(\.modelContext) var modelContext
     @Environment(\.dismiss) var dismiss
     
-    @State var habit: Habit = Habit(name: "", icon: "checkmark", color: "blue", dailyGoal: 1)
+    let habitsCount: Int
+    
+    @State var habit: Habit = Habit(sortOrder: 0, name: "", icon: "checkmark", color: "blue", dailyGoal: 1)
     var isEditing: Bool = false
     
     @State private var c: Color = Color(red: 0, green: 0, blue: 0)
@@ -105,6 +107,7 @@ struct AddHabitView: View {
                 ToolbarItem {
                     Button("Add") {
                         if !isEditing {
+                            habit.sortOrder = habitsCount
                             modelContext.insert(habit)
                         }
                         dismiss()
@@ -118,7 +121,7 @@ struct AddHabitView: View {
 }
 
 #Preview {
-    AddHabitView()
+    AddHabitView(habitsCount: 1)
 }
 
 

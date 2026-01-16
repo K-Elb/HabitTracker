@@ -10,8 +10,9 @@ import SwiftData
 
 struct HabitsView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query private var habits: [Habit]
-    @State private var showingAddHabit = false
+    @Query(sort: \Habit.sortOrder) private var habits: [Habit]
+    @State private var showAddHabit = false
+    @State private var showOrderList = false
     
     var body: some View {
         NavigationStack {
@@ -19,20 +20,29 @@ struct HabitsView: View {
                 if habits.isEmpty {
                     emptyStateView()
                 } else {
-                    HabitsList()
+                    HabitsList(habits: habits)
                 }
             }
             .navigationTitle("Habits")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem {
-                    Button(action: { showingAddHabit = true }) {
+                    Button(action: { showAddHabit = true }) {
                         Image(systemName: "plus")
                     }
                 }
+                
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(action: { showOrderList = true }) {
+                        Image(systemName: "list.number")
+                    }
+                }
             }
-            .sheet(isPresented: $showingAddHabit) {
-                AddHabitView()
+            .sheet(isPresented: $showAddHabit) {
+                AddHabitView(habitsCount: habits.count)
+            }
+            .sheet(isPresented: $showOrderList) {
+                ReorderView(habits: habits)
             }
             .task { await addHabits() }
         }
@@ -42,7 +52,7 @@ struct HabitsView: View {
         VStack {
             ContentUnavailableView("No Habits Yet", systemImage: "checkmark.circle", description: Text("Start building better habits today"))
             
-            Button(action: { showingAddHabit = true }) {
+            Button(action: { showAddHabit = true }) {
                 Text("Add Your First Habit")
                     .fontWeight(.semibold)
                     .foregroundColor(.white)
@@ -58,13 +68,13 @@ struct HabitsView: View {
     func addHabits() async {
         let fetchDescriptor = FetchDescriptor<Habit>()
         if let results = try? modelContext.fetchCount(fetchDescriptor), results == 0 {
-            modelContext.insert(Habit(name: "Reading", icon: "book.fill", color: "mint"))
-            modelContext.insert(Habit(name: "Exercise", icon: "dumbbell.fill", color: "indigo"))
-            modelContext.insert(Habit(name: "Meditate", icon: "apple.meditate", color: "green"))
+            modelContext.insert(Habit(sortOrder: 1, name: "Reading", icon: "book.fill", color: "mint"))
+            modelContext.insert(Habit(sortOrder: 2, name: "Exercise", icon: "dumbbell.fill", color: "indigo"))
+            modelContext.insert(Habit(sortOrder: 3, name: "Meditate", icon: "apple.meditate", color: "green"))
             
-            modelContext.insert(Habit(name: "Water", icon: "waterbottle.fill", color: "cyan", dailyGoal: 2500))
-            modelContext.insert(Habit(name: "Weight", icon: "figure", color: "orange"))
-            modelContext.insert(Habit(name: "Calories", icon: "flame.fill", color: "red", dailyGoal: 2200))
+            modelContext.insert(Habit(sortOrder: 4, name: "Water", icon: "waterbottle.fill", color: "cyan", dailyGoal: 2500))
+            modelContext.insert(Habit(sortOrder: 5, name: "Weight", icon: "figure", color: "orange"))
+            modelContext.insert(Habit(sortOrder: 6, name: "Calories", icon: "flame.fill", color: "red", dailyGoal: 2200))
         }
 //        if !habits.contains(where: { $0.name == "Water" }) {
 //            modelContext.insert(Habit(name: "Water", icon: "waterbottle.fill", color: "cyan", dailyGoal: 2500))

@@ -61,6 +61,7 @@ struct HabitRow: View {
                         
                         Label("\(habit.completions.count)", systemImage: "number")
 
+                        Label("\(habit.sortOrder)", systemImage: "list.number")
                         
                         Spacer()
                         
@@ -131,5 +132,5 @@ struct MeshBackground: View {
 }
 
 #Preview {
-    HabitRow(habit: Habit(name: "Reading", icon: "book.fill", color: "orange"))
+    HabitRow(habit: Habit(sortOrder: 0, name: "Reading", icon: "book.fill", color: "orange"))
 }

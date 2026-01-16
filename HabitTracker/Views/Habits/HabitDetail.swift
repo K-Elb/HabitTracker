@@ -13,6 +13,7 @@ struct HabitDetail: View {
     var isDetailed: Bool = true
     
     @State private var selectedDate: Date = Date()
+    @State private var year: Int = 2026
         
     var body: some View {
         ScrollView(showsIndicators: false) {
@@ -20,7 +21,7 @@ struct HabitDetail: View {
                 HabitRow(habit: habit, isDetailed: isDetailed)
                 
                 if isDetailed {
-                    YearView(habit: habit)
+                    YearView(habit: habit, year: $year)
                 }
             }
         }
@@ -68,7 +69,7 @@ struct EditButtons: View {
             DateSelectorView(habit: habit)
         }
         .sheet(isPresented: $isEditingHabit) {
-            AddHabitView(habit: habit, isEditing: true)
+            AddHabitView(habitsCount: 0, habit: habit, isEditing: true)
         }
     }
 }
@@ -133,6 +134,6 @@ struct DateSelectorView: View {
 
 #Preview {
     NavigationStack {
-        HabitDetail(habit: Habit(name: "drink water", icon: "drop.fill", color: "mint"))
+        HabitDetail(habit: Habit(sortOrder: 0, name: "drink water", icon: "drop.fill", color: "mint"))
     }
 }

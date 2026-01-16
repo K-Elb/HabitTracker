@@ -79,5 +79,5 @@ struct DataPicker: View {
 }
 
 #Preview {
-    DataPicker(habit: Habit(name: "Water", icon: "waterbottle", color: "blue"))
+    DataPicker(habit: Habit(sortOrder: 0, name: "Water", icon: "waterbottle", color: "blue"))
 }
