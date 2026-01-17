@@ -24,6 +24,13 @@ struct HabitRow: View {
                     .foregroundStyle(.wb)
                     .padding(8)
                 
+                if habit.isDefault {
+                    let amount = habit.name == "Weight" ? String(habit.totalOnThisDay(selectedDate)) : String(Int(habit.totalOnThisDay(selectedDate)))
+                    Text("\(amount) \(habit.unit)")
+                        .font(.title.bold())
+                        .foregroundStyle(.wb)
+                }
+                
                 Spacer()
                 
                 Button(action: { addHabitEntry() }) {
@@ -40,7 +47,7 @@ struct HabitRow: View {
                 .buttonStyle(.plain)
                 .sheet(isPresented: $isShowingSheet) {
                     switch habit.name {
-                    case "Water", "Calories", "Weight": DataPicker(habit: habit)
+                    case "Water", "Calories", "Weight": DataPicker(habit: habit, selectedDate: selectedDate)
                     default: EmptyView()
                     }
                 }
@@ -57,18 +64,14 @@ struct HabitRow: View {
                     Spacer()
                     
                     HStack {
-                        Label("\(habit.currentStreak())", systemImage: "flame.fill")
-                        
-                        Label("\(habit.completions.count)", systemImage: "number")
-
                         Label("\(habit.sortOrder)", systemImage: "list.number")
+                        Label("\(habit.completions.count)", systemImage: "number")
+                        Label("\(habit.currentStreak())", systemImage: "flame.fill")
+                        if habit.dailyGoal != 1 {
+                            Label("\(Int(habit.dailyGoal))", systemImage: "target")
+                        }
                         
                         Spacer()
-                        
-                        if habit.dailyGoal > 1 {
-                            Text("\(Int(habit.totalOnThisDay())) / \(Int(habit.dailyGoal))")
-                                .bold()
-                        }
                     }
                     .padding(.horizontal, 4)
                 }

@@ -45,28 +45,6 @@ struct YearView: View {
 
     var body: some View {
         VStack {
-            HStack {
-                if year > oldestYear {
-                    Button(action: { year -= 1 }) {
-                        Image(systemName: "chevron.backward")
-                    }
-                }
-                Spacer()
-                if year < latestYear {
-                    Button(action: { year += 1 }) {
-                        Image(systemName: "chevron.forward")
-                    }
-                }
-                    
-            }
-            .padding(.horizontal, 24)
-            .padding(.top, 8)
-            .overlay {
-                Text(String(year))
-            }
-            .bold()
-            .foregroundStyle(color)
-            
             HStack(spacing: (UIScreen.main.bounds.width)/18) {
                 ForEach(months.indices, id: \.self) { index in
                     Text(months[index])
@@ -106,7 +84,26 @@ struct YearView: View {
             .chartYScale(domain: -32...0)
             .chartForegroundStyleScale(range: colorRange)
             
-            
+            HStack {
+                if year > oldestYear {
+                    Button(action: { year -= 1 }) {
+                        Image(systemName: "chevron.backward")
+                    }
+                }
+                Spacer()
+                if year < latestYear {
+                    Button(action: { year += 1 }) {
+                        Image(systemName: "chevron.forward")
+                    }
+                }
+                    
+            }
+            .padding(.horizontal, 24)
+            .overlay {
+                Text(String(year))
+            }
+            .bold()
+            .foregroundStyle(color)
         }
     }
 

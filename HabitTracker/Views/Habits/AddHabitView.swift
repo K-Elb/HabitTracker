@@ -39,7 +39,11 @@ struct AddHabitView: View {
         "key.fill", "car.fill", "bus.fill", "airplane", "globe.americas.fill"
     ]
     
-    let colors = ["blue", "green", "orange", "red", "purple", "yellow", "indigo", "teal"]
+    let colors = ["blue", "green", "orange", "red", "purple", "yellow", "indigo", "teal",
+                  "33,60,81", "101,148,177", "221,174,211", "238,238,238","254,234,201","255,205,201","253,172,172","253,121,121",
+                  "0,247,255","176,255,250","255,0,135","255,125,176","54,47,79","91,35,255","0,139,255","228,255,48",
+                  "42,0,78","80,0,115","198,35,0","241,74,0","255,101,0","30,62,98","11,25,44","0,34,77"
+    ]
     
     var body: some View {
         NavigationStack {

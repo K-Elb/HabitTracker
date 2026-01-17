@@ -21,7 +21,21 @@ extension Color {
         case "teal": return .teal
         case "mint": return .mint
         case "cyan": return .cyan
-        default: return .blue
+        default: return fromHex(string)
         }
+    }
+    
+    static func fromHex(_ hex: String) -> Color {
+        let components = hex
+            .split(separator: ",")
+            .compactMap { Double($0.trimmingCharacters(in: .whitespaces)) }
+        
+        guard components.count == 3 else { return .blue }
+        
+        return Color(
+            red: components[0] / 255,
+            green: components[1] / 255,
+            blue: components[2] / 255
+        )
     }
 }

@@ -40,6 +40,20 @@ class Habit {
     }
     
     var isDefault: Bool { name == "Water" || name == "Calories" || name == "Weight"}
+    var unit: String {
+        switch name {
+        case "Water": return "ml"
+        case "Calories": return "kcal"
+        case "Weight": return "kg"
+        default: return ""
+        }
+    }
+    var isAmountInt: Bool {
+        switch name {
+        case "Water", "Calories": return true
+        default: return false
+        }
+    }
     
     func isCompletedOnThisDay(_ date: Date = Date()) -> Bool {
 //        completions.contains { Calendar.current.isDateInToday($0.time) }
@@ -62,8 +76,10 @@ class Habit {
     func addCompletion(_ date: Date, of amount: Double = 1.0) {
         if isCompletedOnThisDay(date), dailyGoal == 1.0 {
             completions.removeAll { Calendar.current.isDate($0.time, inSameDayAs: date) }
+            print("Removed all completions for today")
         } else {
             completions.append(Log(time: date, amount: amount))
+            print("Added completion on \(date) of \(amount)")
         }
     }
     

@@ -82,6 +82,7 @@ struct DateSelectorView: View {
     @State private var startDate = Calendar.current.date(from: DateComponents(year: 2024, month: 1, day: 1))!
     @State private var endDate = Date()
     
+    let calendar = Calendar.current
     var bounds: Range<Date> {
         return startDate..<endDate
     }
@@ -120,15 +121,24 @@ struct DateSelectorView: View {
     }
     
     func getDates() -> Set<DateComponents> {
-        Set(habit.completions.map { Calendar.current.dateComponents([.year, .month, .day], from: $0.time) })
+        Set(habit.completions.map { calendar.dateComponents([.year, .month, .day], from: $0.time) })
     }
     
     func save() {
         for date in selectedDates.compactMap(\.date) {
-            if !habit.completions.contains(where: { Calendar.current.isDate($0.time, inSameDayAs: date) }) {
+            if !habit.completions.contains(where: { calendar.isDate($0.time, inSameDayAs: date) }) {
                 habit.addCompletion(date)
+                print("added")
             }
         }
+        
+//        let dates = habit.completions.map { calendar.dateComponents([.year, .month, .day], from: $0.time) }
+//        for date in dates {
+//            if selectedDates.contains(where: { $0 == date }), let d = calendar.date(from: date) {
+//                habit.completions.removeAll { calendar.isDate($0.time, inSameDayAs: d) }
+//                print("deleted")
+//            }
+//        }
     }
 }
 

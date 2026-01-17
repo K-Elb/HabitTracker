@@ -68,13 +68,13 @@ struct HabitsView: View {
     func addHabits() async {
         let fetchDescriptor = FetchDescriptor<Habit>()
         if let results = try? modelContext.fetchCount(fetchDescriptor), results == 0 {
-            modelContext.insert(Habit(sortOrder: 1, name: "Reading", icon: "book.fill", color: "mint"))
-            modelContext.insert(Habit(sortOrder: 2, name: "Exercise", icon: "dumbbell.fill", color: "indigo"))
-            modelContext.insert(Habit(sortOrder: 3, name: "Meditate", icon: "apple.meditate", color: "green"))
+            modelContext.insert(Habit(sortOrder: 3, name: "Reading", icon: "book.fill", color: "mint"))
+            modelContext.insert(Habit(sortOrder: 4, name: "Exercise", icon: "dumbbell.fill", color: "indigo"))
+            modelContext.insert(Habit(sortOrder: 5, name: "Meditate", icon: "apple.meditate", color: "green"))
             
-            modelContext.insert(Habit(sortOrder: 4, name: "Water", icon: "waterbottle.fill", color: "cyan", dailyGoal: 2500))
-            modelContext.insert(Habit(sortOrder: 5, name: "Weight", icon: "figure", color: "orange"))
-            modelContext.insert(Habit(sortOrder: 6, name: "Calories", icon: "flame.fill", color: "red", dailyGoal: 2200))
+            modelContext.insert(Habit(sortOrder: 0, name: "Water", icon: "waterbottle.fill", color: "cyan", dailyGoal: 2500))
+            modelContext.insert(Habit(sortOrder: 2, name: "Weight", icon: "figure", color: "orange"))
+            modelContext.insert(Habit(sortOrder: 1, name: "Calories", icon: "flame.fill", color: "red", dailyGoal: 2200))
         }
 //        if !habits.contains(where: { $0.name == "Water" }) {
 //            modelContext.insert(Habit(name: "Water", icon: "waterbottle.fill", color: "cyan", dailyGoal: 2500))
