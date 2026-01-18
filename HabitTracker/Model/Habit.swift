@@ -20,7 +20,7 @@ class Log {
 }
 
 @Model
-class Habit {
+final class Habit {
     var sortOrder: Int
     @Attribute(.unique) var name: String
     var icon: String
@@ -55,12 +55,12 @@ class Habit {
         }
     }
     
-    func isCompletedOnThisDay(_ date: Date = Date()) -> Bool {
+    func isCompletedOn(_ date: Date = Date()) -> Bool {
 //        completions.contains { Calendar.current.isDateInToday($0.time) }
-        totalOnThisDay(date) >= dailyGoal
+        totalOn(date) >= dailyGoal
     }
     
-    func totalOnThisDay(_ date: Date = Date()) -> Double {
+    func totalOn(_ date: Date = Date()) -> Double {
         var total: Double = 0.0
         let calender = Calendar.current
         
@@ -74,7 +74,7 @@ class Habit {
     }
     
     func addCompletion(_ date: Date, of amount: Double = 1.0) {
-        if isCompletedOnThisDay(date), dailyGoal == 1.0 {
+        if isCompletedOn(date), dailyGoal == 1.0 {
             completions.removeAll { Calendar.current.isDate($0.time, inSameDayAs: date) }
             print("Removed all completions for today")
         } else {

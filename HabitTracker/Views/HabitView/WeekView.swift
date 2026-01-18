@@ -22,7 +22,7 @@ struct WeekView: View {
                             .font(.caption.bold())
                             .foregroundStyle(selectedDate == date ? .accent : .wb)
                         
-                        let done: Bool = habit.totalOnThisDay(date) >= habit.dailyGoal
+                        let done: Bool = habit.totalOn(date) >= habit.dailyGoal
                         RoundedRectangle(cornerRadius: 32)
                             .fill(selectedDate == date ? .primary : done ? Color.from(string: habit.color) : .wb)
                             .aspectRatio(1, contentMode: .fit)

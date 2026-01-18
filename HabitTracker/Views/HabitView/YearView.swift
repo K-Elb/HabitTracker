@@ -9,10 +9,10 @@ import SwiftUI
 import Charts
 
 struct TaskCompletion {
-    let date: Date
-    let x: Int
-    let y: Int
-    let value: Double
+    var date: Date
+    var x: Int
+    var y: Int
+    var value: Double
 }
 
 struct YearView: View {
@@ -38,24 +38,48 @@ struct YearView: View {
         let oldestDate = habit.completions.map(\.time).min() ?? Date()
         return calendar.component(.year, from: oldestDate)
     }
+    
     var latestYear: Int {
         calendar.component(.year, from: Date())
     }
-
+    
+    var allDaysInYear: [TaskCompletion] {
+        guard
+            let start = calendar.date(from: DateComponents(year: year, month: 1, day: 1)),
+            let end = calendar.date(from: DateComponents(year: year, month: 12, day: 31))
+        else { return [] }
+        
+        var dates: [TaskCompletion] = []
+        var current = start
+        
+        while current <= end {
+            dates.append(
+                TaskCompletion(
+                    date: current,
+                    x: calendar.component(.month, from: current),
+                    y: -calendar.component(.day, from: current),
+                    value: habit.totalOn(current) //Double(Int.random(in: 0...4))
+                )
+            )
+            current = calendar.date(byAdding: .day, value: 1, to: current)!
+        }
+        
+        return dates
+    }
 
     var body: some View {
-        VStack {
+        VStack(spacing: 0) {
             HStack(spacing: (UIScreen.main.bounds.width)/18) {
                 ForEach(months.indices, id: \.self) { index in
                     Text(months[index])
                 }
             }
-            .offset(y: 12)
+            .padding(.top)
             .font(.caption.bold())
             .foregroundStyle(color)
             
             Chart(allDaysInYear, id: \.date) { data in
-                let w  = MarkDimension(floatLiteral: 16)
+                let w  = MarkDimension(floatLiteral: 18)
                 if data.value > 0 {
                     RectangleMark (
                         x: .value("x", data.x),
@@ -96,8 +120,8 @@ struct YearView: View {
                         Image(systemName: "chevron.forward")
                     }
                 }
-                    
             }
+            .padding(.top)
             .padding(.horizontal, 24)
             .overlay {
                 Text(String(year))
@@ -105,30 +129,6 @@ struct YearView: View {
             .bold()
             .foregroundStyle(color)
         }
-    }
-
-    private var allDaysInYear: [TaskCompletion] {
-        guard
-            let start = calendar.date(from: DateComponents(year: year, month: 1, day: 1)),
-            let end = calendar.date(from: DateComponents(year: year, month: 12, day: 31))
-        else { return [] }
-
-        var dates: [TaskCompletion] = []
-        var current = start
-        
-        while current <= end {
-            dates.append(
-                TaskCompletion(
-                    date: current,
-                    x: calendar.component(.month, from: current),
-                    y: -calendar.component(.day, from: current),
-                    value: habit.totalOnThisDay(current) //Double(Int.random(in: 0...4))
-                )
-            )
-            current = calendar.date(byAdding: .day, value: 1, to: current)!
-        }
-
-        return dates
     }
 }
 

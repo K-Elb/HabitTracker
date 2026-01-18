@@ -11,6 +11,9 @@ import SwiftData
 struct HabitsView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \Habit.sortOrder) private var habits: [Habit]
+    
+    // MARK: Data Owned by Me
+    @State private var habitToEdit: Habit?
     @State private var showAddHabit = false
     @State private var showOrderList = false
     
@@ -26,28 +29,65 @@ struct HabitsView: View {
             .navigationTitle("Habits")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem {
-                    Button(action: { showAddHabit = true }) {
-                        Image(systemName: "plus")
-                    }
-                }
-                
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(action: { showOrderList = true }) {
-                        Image(systemName: "list.number")
-                    }
-                }
+                addButton
+                editHabits
             }
-            .sheet(isPresented: $showAddHabit) {
-                AddHabitView(habitsCount: habits.count)
-            }
-            .sheet(isPresented: $showOrderList) {
-                ReorderView(habits: habits)
-            }
-            .task { await addHabits() }
+            .task { await addSampleHabits() }
         }
     }
     
+    // MARK: - Habits List
+    var editHabits: some View {
+        Button("Edit habits", systemImage: "list.bullet") {
+            showOrderList = true
+        }
+        .sheet(isPresented: $showOrderList) {
+            ReorderView(habits: habits)
+        }
+    }
+    
+    // MARK: - Add Habit
+    var addButton: some View {
+        Button("Add Habit", systemImage: "plus") {
+            habitToEdit = Habit(sortOrder: habits.count, name: "", icon: "figure", color: "blue", dailyGoal: 1)
+        }
+        .sheet(isPresented: showHabitEditor) {
+            habitEditor
+        }
+    }
+    
+    @ViewBuilder
+    var habitEditor: some View {
+        if let habitToEdit {
+            let copyOfHabitToEdit = Habit(
+                sortOrder: habitToEdit.sortOrder,
+                name: habitToEdit.name,
+                icon: habitToEdit.icon,
+                color: habitToEdit.color,
+                dailyGoal: habitToEdit.dailyGoal
+            )
+            
+            HabitEditor(habit: copyOfHabitToEdit) {
+                if habits.contains(habitToEdit) {
+                    modelContext.delete(habitToEdit)
+                }
+                modelContext.insert(copyOfHabitToEdit)
+            }
+        }
+    }
+    
+    var showHabitEditor: Binding<Bool> {
+        Binding<Bool>(
+            get: { habitToEdit != nil },
+            set: { newValue in
+                if !newValue {
+                    habitToEdit = nil
+                }
+            }
+        )
+    }
+    
+    // MARK: - Other
     func emptyStateView() -> some View {
         VStack {
             ContentUnavailableView("No Habits Yet", systemImage: "checkmark.circle", description: Text("Start building better habits today"))
@@ -65,7 +105,7 @@ struct HabitsView: View {
         }
     }
     
-    func addHabits() async {
+    func addSampleHabits() async {
         let fetchDescriptor = FetchDescriptor<Habit>()
         if let results = try? modelContext.fetchCount(fetchDescriptor), results == 0 {
             modelContext.insert(Habit(sortOrder: 3, name: "Reading", icon: "book.fill", color: "mint"))
@@ -76,15 +116,6 @@ struct HabitsView: View {
             modelContext.insert(Habit(sortOrder: 2, name: "Weight", icon: "figure", color: "orange"))
             modelContext.insert(Habit(sortOrder: 1, name: "Calories", icon: "flame.fill", color: "red", dailyGoal: 2200))
         }
-//        if !habits.contains(where: { $0.name == "Water" }) {
-//            modelContext.insert(Habit(name: "Water", icon: "waterbottle.fill", color: "cyan", dailyGoal: 2500))
-//        }
-//        if !habits.contains(where: { $0.name == "Weight" }) {
-//            modelContext.insert(Habit(name: "Weight", icon: "figure", color: "orange"))
-//        }
-//        if !habits.contains(where: { $0.name == "Calories" }) {
-//            modelContext.insert(Habit(name: "Calories", icon: "flame.fill", color: "red", dailyGoal: 2200))
-//        }
     }
 }
 
