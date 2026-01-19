@@ -109,7 +109,7 @@ struct DataPicker: View {
                 if habit.name == "Weight" {
                     amount = height*50 + 50
                 } else {
-                    amount = height*500
+                    amount = Double(Int(height*20)*25)
                 }
                 textInput = habit.isAmountInt ? String(Int(amount)) : String(amount)
             }
@@ -117,5 +117,5 @@ struct DataPicker: View {
 }
 
 #Preview {
-    DataPicker(habit: Habit(sortOrder: 0, name: "Weight", icon: "waterbottle", color: "blue"), selectedDate: Date())
+    DataPicker(habit: Habit(sortOrder: 0, name: "Water", icon: "waterbottle", color: "blue"), selectedDate: Date())
 }

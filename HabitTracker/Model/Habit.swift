@@ -9,9 +9,12 @@ import Foundation
 import SwiftData
 
 @Model
-class Log {
-    var time: Date
-    var amount: Double
+final class Log {
+    var time: Date = Date()
+    var amount: Double = 0
+    var habit: Habit? // For Habit to add completions normally
+    
+    init() { } // For Codable extension + all vars need to be initialised
     
     init(time: Date, amount: Double) {
         self.time = time
@@ -21,21 +24,23 @@ class Log {
 
 @Model
 final class Habit {
-    var sortOrder: Int
-    @Attribute(.unique) var name: String
-    var icon: String
-    var color: String
-    var completions: [Log]
-    var createdDate: Date
-    var dailyGoal: Double
+    var sortOrder: Int = 0
+    @Attribute(.unique) var name: String = ""
+    var icon: String = ""
+    var color: String = ""
+    var completions: [Log] = []
+    var createdDate: Date = Date()
+    var dailyGoal: Double = 1
     
-    init(sortOrder: Int, name: String, icon: String, color: String, dailyGoal: Double = 1.0) {
+    init() { } // For Codable extension + all vars need to be initialised
+    
+    init(sortOrder: Int, name: String, icon: String, color: String, completions: [Log] = [], createdDate: Date = Date(), dailyGoal: Double = 1.0) {
         self.sortOrder = sortOrder
         self.name = name
         self.icon = icon
         self.color = color
-        self.completions = []
-        self.createdDate = Date()
+        self.completions = completions
+        self.createdDate = createdDate
         self.dailyGoal = dailyGoal
     }
     

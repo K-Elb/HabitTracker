@@ -117,6 +117,24 @@ struct HabitsView: View {
             modelContext.insert(Habit(sortOrder: 1, name: "Calories", icon: "flame.fill", color: "red", dailyGoal: 2200))
         }
     }
+    
+//    func loadSampleGames() async {
+//        for url in sampleGamesURLS {
+//            do {
+//                let (json, _) = try await URLSession.shared.data(from: url)
+//                let game = try JSONDecoder().decode(CodeBreaker.self, from: json)
+//                modelContext.insert(game)
+//                print("Loaded sample games from \(url)")
+//            } catch {
+//                print("Couldn't load a sample game: \(error.localizedDescription)")
+//            }
+//        }
+//    }
+//    
+//    var sampleGamesURLS: [URL] {
+//        Bundle.main.paths(forResourcesOfType: "json", inDirectory: nil)
+//            .map { URL(filePath: $0) }
+//    }
 }
 
 #Preview(traits: .swiftData) {
