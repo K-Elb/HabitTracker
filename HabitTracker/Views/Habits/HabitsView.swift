@@ -26,8 +26,8 @@ struct HabitsView: View {
                     HabitsList(habits: habits)
                 }
             }
-            .navigationTitle("Habits")
-            .navigationBarTitleDisplayMode(.inline)
+//            .navigationTitle("Habits")
+//            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 addButton
                 editHabits

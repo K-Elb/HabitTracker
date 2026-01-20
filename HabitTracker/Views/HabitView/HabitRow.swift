@@ -18,15 +18,16 @@ struct HabitRow: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            HStack {
+            HStack(spacing: 0) {
+                Image(systemName: habit.icon)
+                    .font(.title.bold())
+                    .frame(maxWidth: 40, maxHeight: 40, alignment: .leading)
+                    .foregroundStyle(.wb)
+                    .padding(.leading, 8)
+                
                 if habit.isDefault {
                     let amount = habit.name == "Weight" ? String(habit.totalOn(selectedDate)) : String(Int(habit.totalOn(selectedDate)))
-                    Label("\(amount) \(habit.unit)", systemImage: habit.icon)
-                        .font(.title.bold())
-                        .foregroundStyle(.wb)
-                        .padding(8)
-                } else {
-                    Image(systemName: habit.icon)
+                    Text("\(amount) \(habit.unit)")
                         .font(.title.bold())
                         .foregroundStyle(.wb)
                         .padding(8)
@@ -36,9 +37,9 @@ struct HabitRow: View {
                 
                 addButton
             }
-            .frame(height: 48)
+            .frame(maxHeight: 48)
             
-            HStack(alignment: .top) {
+            HStack {
                 VStack(alignment: .leading) {
                     Text(habit.name)
                         .font(.title)
@@ -53,9 +54,8 @@ struct HabitRow: View {
                         if habit.dailyGoal != 1 {
                             Label("\(Int(habit.dailyGoal))", systemImage: "target")
                         }
-                        
-                        Spacer()
                     }
+                    .font(.caption)
                 }
                 .foregroundStyle(Color.from(string: habit.color))
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -64,12 +64,16 @@ struct HabitRow: View {
             .padding(12)
             .frame(height: 136)
             .background(.wb)
-            .clipShape(RoundedRectangle(cornerRadius: 26))
+            .clipShape(RoundedRectangle(cornerRadius: 24))
             
             if isDetailed {
+                Stats(habit: habit)
+                
                 WeekView(habit: habit, selectedDate: $selectedDate)
             }
         }
+        .background(Color.from(string: habit.color))
+        .clipShape(RoundedRectangle(cornerRadius: 24))
         .padding(8)
         .background(Color.from(string: habit.color))
         .clipShape(RoundedRectangle(cornerRadius: 32))
@@ -78,15 +82,15 @@ struct HabitRow: View {
     
     var addButton: some View {
         Button(action: { addHabitEntry() }) {
-            Circle()
-                .foregroundStyle(habit.isCompletedOn(selectedDate) ? .clear : .wb)
-                .aspectRatio(1, contentMode: .fit)
-                .overlay {
-                    Image(systemName: habit.isCompletedOn(selectedDate) ? "checkmark" : "plus")
-                        .font(.title2.bold())
-                        .foregroundStyle(habit.isCompletedOn(selectedDate) ? .wb : Color.from(string: habit.color))
-                        .contentTransition(.symbolEffect(.replace))
-                }
+            let isDone = habit.isCompletedOn(selectedDate)
+            Image(systemName: isDone ? "checkmark" : "plus")
+                .font(.title.bold())
+                .foregroundStyle(.wb)
+                .padding(8)
+//                .foregroundStyle(isDone ? .wb : Color.from(string: habit.color))
+//                .background(isDone ? .clear : .wb)
+//                .clipShape(RoundedRectangle(cornerRadius: 16))
+                .contentTransition(.symbolEffect(.replace))
         }
         .buttonStyle(.plain)
         .sheet(isPresented: $isShowingSheet) {

@@ -17,29 +17,31 @@ struct WeekView: View {
         HStack(spacing: 8) {
             ForEach(dates, id: \.self) { date in
                 Button(action: { selectDate(date) }) {
-                    VStack(spacing: 0) {
-                        Text(shortDateFormatter.string(from: date))
-                            .font(.caption.bold())
-                            .foregroundStyle(selectedDate == date ? .accent : .wb)
-                        
-                        let done: Bool = habit.totalOn(date) >= habit.dailyGoal
-                        RoundedRectangle(cornerRadius: 32)
-                            .fill(selectedDate == date ? .primary : done ? Color.from(string: habit.color) : .wb)
-                            .aspectRatio(1, contentMode: .fit)
-                            .overlay(
-                                Text(dayFormatter.string(from: date))
-                                    .bold()
-                                    .foregroundStyle(done ? .wb: Color.from(string: habit.color))
-                            )
-                    }
+                    DateButton(date)
                 }
             }
+            .frame(maxWidth: .infinity)
         }
-        .frame(maxWidth: .infinity)
     }
-
-    // MARK: - Date Helpers
     
+    @ViewBuilder
+    func DateButton(_ date: Date) -> some View {
+        let done: Bool = habit.totalOn(date) >= habit.dailyGoal
+        VStack {
+            Text(shortDateFormatter.string(from: date))
+                .font(.caption.bold())
+            
+                    Text(dayFormatter.string(from: date))
+        }
+        .bold()
+        .padding(8)
+        .frame(maxWidth: .infinity)
+        .foregroundStyle(done ? .wb: Color.from(string: habit.color))
+        .background(selectedDate == date ? .primary : done ? Color.from(string: habit.color) : .wb)
+        .clipShape(RoundedRectangle(cornerRadius: 8))
+    }
+    
+    // MARK: - Date Helpers
     func selectDate(_ date: Date) {
         if selectedDate == date {
             selectedDate = Date()
