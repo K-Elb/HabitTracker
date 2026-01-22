@@ -24,13 +24,14 @@ struct HabitDetail: View {
                 YearView(habit: habit, year: $year)
             }
         }
-        .toolbar {
-            if isDetailed {
-                editHabit
-
-                EditButtons(habit: habit)
-            }
-        }
+        .ignoresSafeArea()
+//        .toolbar {
+//            if isDetailed {
+//                editHabit
+//
+//                EditButtons(habit: habit)
+//            }
+//        }
     }
     
     var editHabit: some View {

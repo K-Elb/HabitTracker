@@ -37,7 +37,7 @@ struct HabitRow: View {
                 
                 addButton
             }
-            .frame(maxHeight: 48)
+            .frame(height: 56)
             
             HStack {
                 VStack(alignment: .leading) {
@@ -77,7 +77,7 @@ struct HabitRow: View {
         .padding(8)
         .background(Color.from(string: habit.color))
         .clipShape(RoundedRectangle(cornerRadius: 32))
-        .padding(.horizontal)
+//        .padding(.horizontal)
     }
     
     var addButton: some View {

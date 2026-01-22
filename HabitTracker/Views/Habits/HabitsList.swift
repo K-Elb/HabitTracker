@@ -29,31 +29,32 @@ struct HabitsList: View {
 //                        HabitDetail(habit: habit, isDetailed: false)
 //                    }
 //                    .matchedTransitionSource(id: habit.id, in: transition)
+//                    .offset(y: CGFloat(132*index))
                     
                     // MARK: - Option 2
-                    NavigationLink(value: habit) {
-                        HabitDetail(habit: habit, isDetailed: false)
-                    }
-                    .navigationDestination(for: Habit.self) { habit in
-                        HabitDetail(habit: habit)
-                            .navigationTransition(.zoom(sourceID: habit, in: transition))
-                            .onDisappear {
-                                refreshID = UUID()
-                            }
-                    }
-                    .matchedTransitionSource(id: habit, in: transition)
-                    .offset(y: CGFloat(60*index))
-                
-                    // MARK: - Option 3
-//                    Button(action: {selectedHabit = habit}) {
+//                    NavigationLink(value: habit) {
 //                        HabitDetail(habit: habit, isDetailed: false)
-//                            .matchedTransitionSource(id: habit, in: transition)
 //                    }
-//                    .fullScreenCover(item: $selectedHabit) { habit in
+//                    .navigationDestination(for: Habit.self) { habit in
 //                        HabitDetail(habit: habit)
 //                            .navigationTransition(.zoom(sourceID: habit, in: transition))
+//                            .onDisappear {
+//                                refreshID = UUID()
+//                            }
 //                    }
+//                    .matchedTransitionSource(id: habit, in: transition)
 //                    .offset(y: CGFloat(60*index))
+                
+                    // MARK: - Option 3
+                    Button(action: {selectedHabit = habit}) {
+                        HabitDetail(habit: habit, isDetailed: false)
+                            .matchedTransitionSource(id: habit, in: transition)
+                    }
+                    .fullScreenCover(item: $selectedHabit) { habit in
+                        HabitDetail(habit: habit)
+                            .navigationTransition(.zoom(sourceID: habit, in: transition))
+                    }
+                    .offset(y: CGFloat(132*index))
                 }
             }
             .id(refreshID)

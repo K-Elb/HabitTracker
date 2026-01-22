@@ -100,17 +100,36 @@ final class Habit {
             if calendar.isDate(completionDay, inSameDayAs: currentDate) {
                 streak += 1
                 currentDate = calendar.date(byAdding: .day, value: -1, to: currentDate)!
-            } else if currentDate == calendar.startOfDay(for: Date()) {
-                currentDate = calendar.date(byAdding: .day, value: -1, to: currentDate)!
-                if calendar.isDate(completionDay, inSameDayAs: currentDate) {
-                    streak += 1
-                    currentDate = calendar.date(byAdding: .day, value: -1, to: currentDate)!
-                }
             } else {
                 break
             }
         }
         
         return streak
+    }
+    
+    func longestStreak() -> Int {
+        let calendar = Calendar.current
+        var streak = 0
+        var maxStreak = 0
+        var currentDate = calendar.startOfDay(for: Date())
+        
+        let sortedCompletions = completions.sorted(by: { $0.time > $1.time })
+        
+        for completion in sortedCompletions {
+            let completionDay = calendar.startOfDay(for: completion.time)
+            if calendar.isDate(completionDay, inSameDayAs: currentDate) {
+                streak += 1
+            } else {
+                if streak > maxStreak { maxStreak = streak }
+                streak = 1
+                currentDate = completionDay
+            }
+            currentDate = calendar.date(byAdding: .day, value: -1, to: currentDate)!
+        }
+        
+        if maxStreak == 0 { maxStreak = streak }
+        
+        return maxStreak
     }
 }
