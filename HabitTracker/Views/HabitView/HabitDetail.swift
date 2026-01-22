@@ -18,12 +18,10 @@ struct HabitDetail: View {
     
     var body: some View {
         ScrollView(showsIndicators: false) {
-            VStack {
-                HabitRow(habit: habit, isDetailed: isDetailed, selectedDate: $selectedDate)
-                
-                if isDetailed {
-                    YearView(habit: habit, year: $year)
-                }
+            HabitRow(habit: habit, isDetailed: isDetailed, selectedDate: $selectedDate)
+
+            if isDetailed {
+                YearView(habit: habit, year: $year)
             }
         }
         .toolbar {

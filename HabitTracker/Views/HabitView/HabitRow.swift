@@ -17,7 +17,7 @@ struct HabitRow: View {
     @State private var isShowingSheet: Bool = false
     
     var body: some View {
-        VStack(alignment: .leading) {
+        VStack {
             HStack(spacing: 0) {
                 Image(systemName: habit.icon)
                     .font(.title.bold())
@@ -95,7 +95,7 @@ struct HabitRow: View {
         .buttonStyle(.plain)
         .sheet(isPresented: $isShowingSheet) {
             switch habit.name {
-            case "Water", "Calories", "Weight": DataPicker(habit: habit, selectedDate: selectedDate)
+            case "Water", "Calories", "Weight": AddEntry(habit: habit, selectedDate: selectedDate)
             default: EmptyView()
             }
         }
