@@ -100,8 +100,7 @@ struct Stats: View {
         .padding(12)
         .frame(maxWidth: .infinity, maxHeight: 80, alignment: .leading)
         .foregroundStyle(Color.from(string: habit.color))
-        .background(.wb)
-        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .background(.wb, in: .rect(cornerRadius: 16))
     }
 }
 

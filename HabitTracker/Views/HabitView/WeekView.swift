@@ -37,8 +37,7 @@ struct WeekView: View {
         .padding(8)
         .frame(maxWidth: .infinity)
         .foregroundStyle(done ? .wb: Color.from(string: habit.color))
-        .background(selectedDate == date ? .primary : done ? Color.from(string: habit.color) : .wb)
-        .clipShape(RoundedRectangle(cornerRadius: 8))
+        .background(selectedDate == date ? .primary : done ? Color.from(string: habit.color) : .wb, in: .rect(cornerRadius: 8))
     }
     
     // MARK: - Date Helpers

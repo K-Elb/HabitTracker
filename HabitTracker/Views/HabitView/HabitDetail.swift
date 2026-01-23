@@ -14,7 +14,6 @@ struct HabitDetail: View {
     
     @State private var selectedDate: Date = Date()
     @State private var year: Int = 2026
-    @State private var isEditingHabit: Bool = false
     
     var body: some View {
         ScrollView(showsIndicators: false) {
@@ -22,25 +21,11 @@ struct HabitDetail: View {
 
             if isDetailed {
                 YearView(habit: habit, year: $year)
+                
+                EditButtons(habit: habit)
             }
         }
-        .ignoresSafeArea()
-//        .toolbar {
-//            if isDetailed {
-//                editHabit
-//
-//                EditButtons(habit: habit)
-//            }
-//        }
-    }
-    
-    var editHabit: some View {
-        Button("Edit habit", systemImage: "pencil") {
-            isEditingHabit = true
-        }
-        .sheet(isPresented: $isEditingHabit) {
-            HabitEditor(habit: habit, isEditing: true) { }
-        }
+        .ignoresSafeArea(edges: .top)
     }
 }
 
@@ -49,33 +34,42 @@ struct EditButtons: View {
     
     @State private var isAdding: Bool = false
     @State private var isEditingEntries: Bool = false
-    
+    @State private var isEditingHabit: Bool = false
+
     var body: some View {
-        Menu {
-            Button(action: { isAdding = true }) {
-                Label("Add missing entries", systemImage: "plus")
+        HStack {
+            Button("Edit habit", systemImage: "pencil") {
+                isEditingHabit = true
+            }
+            .sheet(isPresented: $isEditingHabit) {
+                HabitEditor(habit: habit, isEditing: true) { }
             }
             
-            Button(action: {isEditingEntries = true }) {
-                Label("Edit entries", systemImage: "pencil")
-            }
-        
-            Button("Save", systemImage: "square.and.arrow.down") {
+            Button("Save Habit", systemImage: "square.and.arrow.down") {
                 if let json = try? JSONEncoder().encode(habit) {
                     let url = URL.documentsDirectory.appendingPathComponent(habit.name).appendingPathExtension("json")
                     try? json.write(to: url)
                 }
             }
-        } label: {
-            Image(systemName: "ellipsis")
         }
-        .sheet(isPresented: $isAdding) {
-            AddEntries(habit: habit)
-        }
+        .buttonStyle(.bordered)
         
-        .sheet(isPresented: $isEditingEntries) {
-            EditEntries(habit: habit)
+        HStack {
+            Button(action: { isAdding = true }) {
+                Label("Add missing entries", systemImage: "plus")
+            }
+            .sheet(isPresented: $isAdding) {
+                AddEntries(habit: habit)
+            }
+            
+            Button(action: {isEditingEntries = true }) {
+                Label("Edit entries", systemImage: "pencil")
+            }
+            .sheet(isPresented: $isEditingEntries) {
+                EditEntries(habit: habit)
+            }
         }
+        .buttonStyle(.bordered)
     }
 }
 

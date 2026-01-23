@@ -15,10 +15,11 @@ struct HabitsList: View {
     @State private var expanded: Bool = false
     @State private var selectedHabit: Habit?
     @State private var refreshID = UUID()
+    @State private var selectedDate = Date()
     
     var body: some View {
         ScrollView(showsIndicators: false) {
-            ZStack {
+            VStack {
                 ForEach(0..<habits.count, id: \.self) { index in
                     let habit = habits[index]
                     // MARK: - Option 1
@@ -47,16 +48,17 @@ struct HabitsList: View {
                 
                     // MARK: - Option 3
                     Button(action: {selectedHabit = habit}) {
-                        HabitDetail(habit: habit, isDetailed: false)
+                        HabitRow(habit: habit, isDetailed: false, selectedDate: $selectedDate)
                             .matchedTransitionSource(id: habit, in: transition)
                     }
                     .fullScreenCover(item: $selectedHabit) { habit in
                         HabitDetail(habit: habit)
                             .navigationTransition(.zoom(sourceID: habit, in: transition))
                     }
-                    .offset(y: CGFloat(132*index))
+                    .frame(height: 160)
                 }
             }
+            .padding(.vertical, 48)
             .id(refreshID)
         }
     }

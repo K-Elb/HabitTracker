@@ -55,17 +55,31 @@ struct SliderShape: View {
     let pWidth = 100.0
     
     var body: some View {
-        ZStack(alignment: .bottom) {
-            RoundedRectangle(cornerRadius: 8)
-                .foregroundStyle(.ultraThinMaterial)
-            
-            RoundedRectangle(cornerRadius: 8)
-                .padding(8)
-                .foregroundStyle(color)
-                .frame(height: pHeight * height)
+        if habit.name == "Water" {
+            Cup()
+                .fill(LinearGradient(
+                    gradient: Gradient(stops: [
+                        .init(color: color, location: height),
+                        .init(color: .gray.opacity(0.1), location: height)
+                    ]),
+                    startPoint: .bottom,
+                    endPoint: .top
+                ))
+                .aspectRatio(1, contentMode: .fit)
+                .gesture(dragPicker())
+        } else {
+            ZStack(alignment: .bottom) {
+                RoundedRectangle(cornerRadius: 8)
+                    .foregroundStyle(.ultraThinMaterial)
+                
+                RoundedRectangle(cornerRadius: 8)
+                    .padding(8)
+                    .foregroundStyle(color)
+                    .frame(height: pHeight * height)
+            }
+            .frame(maxWidth: pWidth, maxHeight: pHeight)
+            .gesture(dragPicker())
         }
-        .frame(maxWidth: pWidth, maxHeight: pHeight)
-        .gesture(dragPicker())
         
         HStack(spacing: 0) {
             TextField("", text: $textInput)
