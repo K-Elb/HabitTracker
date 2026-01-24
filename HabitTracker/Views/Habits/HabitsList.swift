@@ -55,7 +55,7 @@ struct HabitsList: View {
                         HabitDetail(habit: habit)
                             .navigationTransition(.zoom(sourceID: habit, in: transition))
                     }
-                    .frame(height: 160)
+                    .frame(height: 176)
                 }
             }
             .padding(.vertical, 48)

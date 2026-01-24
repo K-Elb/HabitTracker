@@ -55,7 +55,8 @@ struct SliderShape: View {
     let pWidth = 100.0
     
     var body: some View {
-        if habit.name == "Water" {
+        switch habit.name {
+        case "Water":
             Cup()
                 .fill(LinearGradient(
                     gradient: Gradient(stops: [
@@ -67,7 +68,19 @@ struct SliderShape: View {
                 ))
                 .aspectRatio(1, contentMode: .fit)
                 .gesture(dragPicker())
-        } else {
+        case "Weight":
+            Weight()
+                .fill(LinearGradient(
+                    gradient: Gradient(stops: [
+                        .init(color: color, location: height),
+                        .init(color: .gray.opacity(0.1), location: height)
+                    ]),
+                    startPoint: .bottom,
+                    endPoint: .top
+                ))
+                .aspectRatio(1, contentMode: .fit)
+                .gesture(dragPicker())
+        default:
             ZStack(alignment: .bottom) {
                 RoundedRectangle(cornerRadius: 8)
                     .foregroundStyle(.ultraThinMaterial)
@@ -104,8 +117,8 @@ struct SliderShape: View {
         .font(.system(size: 48).bold())
         .onAppear {
             if habit.name == "Weight" {
-                amount = 75.0
-                textInput = "75.0"
+                amount = 72.5
+                textInput = "72.5"
             }
         }
     }
@@ -117,7 +130,7 @@ struct SliderShape: View {
                 let percentage = max(0.1, min(1, 1-actual))
                 height = percentage
                 if habit.name == "Weight" {
-                    amount = height*50 + 50
+                    amount = height*15 + 65
                 } else {
                     amount = Double(Int(height*20)*25)
                 }
@@ -127,5 +140,5 @@ struct SliderShape: View {
 }
 
 #Preview {
-    AddEntry(habit: Habit(sortOrder: 0, name: "Water", icon: "waterbottle", color: "blue"), selectedDate: Date())
+    AddEntry(habit: Habit(sortOrder: 0, name: "Weight", icon: "waterbottle", color: "blue"), selectedDate: Date())
 }

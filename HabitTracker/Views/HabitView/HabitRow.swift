@@ -47,11 +47,11 @@ struct HabitRow: View {
                 WeekView(habit: habit, selectedDate: $selectedDate)
             }
         }
-        .padding([.horizontal, .bottom], isDetailed ? 24 : 8)
+        .padding([.horizontal, .bottom], /*isDetailed ? 24 :*/ 8)
         .background(Color.from(string: habit.color), in: .rect(cornerRadius: isDetailed ? 0 : 32))
         .containerShape(.rect(cornerRadius: 32))
 //        .clipShape(RoundedRectangle(cornerRadius: 32))
-        .padding(.horizontal, isDetailed ? 0 : 16)
+//        .padding(.horizontal, isDetailed ? 0 : 16)
     }
     
     var title: some View {
