@@ -48,17 +48,15 @@ struct HabitsList: View {
                 
                     // MARK: - Option 3
                     Button(action: {selectedHabit = habit}) {
-                        HabitRow(habit: habit, isDetailed: false, selectedDate: $selectedDate)
+                        HabitRow2(habit: habit)
                             .matchedTransitionSource(id: habit, in: transition)
                     }
                     .fullScreenCover(item: $selectedHabit) { habit in
                         HabitDetail(habit: habit)
                             .navigationTransition(.zoom(sourceID: habit, in: transition))
                     }
-                    .frame(height: 176)
                 }
             }
-            .padding(.vertical, 48)
             .id(refreshID)
         }
     }

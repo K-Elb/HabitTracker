@@ -47,7 +47,8 @@ struct HabitRow: View {
                 WeekView(habit: habit, selectedDate: $selectedDate)
             }
         }
-        .padding([.horizontal, .bottom], /*isDetailed ? 24 :*/ 8)
+        .padding(.bottom)
+        .padding(.horizontal, 24)
         .background(Color.from(string: habit.color), in: .rect(cornerRadius: isDetailed ? 0 : 32))
         .containerShape(.rect(cornerRadius: 32))
 //        .clipShape(RoundedRectangle(cornerRadius: 32))
@@ -105,7 +106,61 @@ struct HabitRow: View {
     }
 }
 
+struct HabitRow2: View {
+    let habit: Habit
+
+    @State private var isShowingSheet: Bool = false
+    
+    var body: some View {
+        VStack {
+            HStack {
+                Label(habit.name, systemImage: habit.icon)
+                    .foregroundStyle(.wb)
+                
+                Spacer()
+                
+                if habit.isDefault {
+                    let amount = habit.name == "Weight" ? String(habit.totalOn()) : String(Int(habit.totalOn()))
+                    Text("\(amount) \(habit.unit)")
+                        .foregroundStyle(.wb)
+                }
+                
+                addButton
+            }
+            .font(.title.bold())
+            
+        }
+        .padding(.horizontal)
+        .padding(.vertical, 12)
+        .background(Color.from(string: habit.color), in: .rect(cornerRadius: 32))
+        .containerShape(.capsule)
+        .padding(.horizontal)
+    }
+    
+    var addButton: some View {
+        Button(action: { addHabitEntry() }) {
+            let isDone = habit.isCompletedOn()
+            Image(systemName: isDone ? "checkmark" : "plus")
+                .foregroundStyle(.wb)
+                .contentTransition(.symbolEffect(.replace))
+        }
+        .sheet(isPresented: $isShowingSheet) {
+            switch habit.name {
+            case "Water", "Calories", "Weight": AddEntry(habit: habit, selectedDate: Date())
+            default: EmptyView()
+            }
+        }
+    }
+    
+    func addHabitEntry() {
+        switch habit.name {
+        case "Water", "Calories", "Weight": isShowingSheet = true
+        default: habit.addCompletion(Date())
+        }
+    }
+}
+
 #Preview {
     @Previewable @State var selectedDate: Date = Date()
-    HabitRow(habit: Habit(sortOrder: 0, name: "Water", icon: "book.fill", color: "orange"),isDetailed: false, selectedDate: $selectedDate)
+    HabitRow2(habit: Habit(sortOrder: 0, name: "Read", icon: "book.fill", color: "orange"))
 }

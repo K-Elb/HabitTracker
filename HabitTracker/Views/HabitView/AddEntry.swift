@@ -21,12 +21,12 @@ struct AddEntry: View {
         VStack {
             SliderShape(habit: habit, amount: $amount)
             
-            Button("Add", systemImage: "plus") {
-                add()
+            Button(action: {add()}) {
+                Label("Add", systemImage: "plus")
+                    .frame(maxWidth: .infinity)
             }
-            .font(.title3.bold())
+            .font(.title2.bold())
             .padding()
-            .frame(maxWidth: .infinity)
             .background(Color.from(string: habit.color))
             .clipShape(.capsule)
         }

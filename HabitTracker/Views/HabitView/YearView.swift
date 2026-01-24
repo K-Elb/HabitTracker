@@ -121,7 +121,7 @@ struct YearView: View {
                     }
                 }
             }
-            .padding(.top)
+            .padding(.vertical)
             .padding(.horizontal, 24)
             .overlay {
                 Text(String(year))
