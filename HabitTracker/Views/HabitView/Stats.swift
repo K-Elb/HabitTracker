@@ -10,12 +10,29 @@ import SwiftUI
 struct Stats: View {
     var habit: Habit
     
-    @State private var week: Double = 0
-    @State private var month: Double = 0
-    @State private var year: Double = 0
-    @State private var total: Double = 0
-    @State private var currentStreak: Int = 0
-    @State private var longestStreak: Int = 0
+    let calendar = Calendar.current
+    let today = Date()
+    var week: Double {
+        let week = calendar.dateInterval(of: .weekOfYear, for: today)!
+        return totalAmount(this: week)
+    }
+    var month: Double {
+        let month = calendar.dateInterval(of: .month, for: today)!
+        return totalAmount(this: month)
+    }
+    var year: Double {
+        let year = calendar.dateInterval(of: .month, for: today)!
+        return totalAmount(this: year)
+    }
+    var total: Double {
+        return totalOverall()
+    }
+    var currentStreak: Int {
+        habit.currentStreak()
+    }
+    var longestStreak: Int {
+        habit.longestStreak()
+    }
     
     var body: some View {
         VStack {
@@ -30,58 +47,33 @@ struct Stats: View {
                 stat("Total", value: total)
             }
         }
-        .onAppear {
-            calculateStats()
-        }
     }
     
-    func calculateStats() {
-        let calendar = Calendar.current
-        let today = Date()
-        let thisWeek = calendar.dateInterval(of: .weekOfYear, for: today)!
-        let thisMonth = calendar.dateInterval(of: .month, for: today)!
-        let thisYear = calendar.dateInterval(of: .year, for: today)!
-        
-        var daysInWeek: [Double] = []
-        var daysInMonth: [Double] = []
-        var daysInYear: [Double] = []
-        
+    func totalAmount(this dates: DateInterval) -> Double {
+        var items: [Double] = []
         for completion in habit.completions {
-            if thisWeek.contains(completion.time) {
-                daysInWeek.append(completion.amount)
-                daysInMonth.append(completion.amount)
-                daysInYear.append(completion.amount)
-            } else if thisMonth.contains(completion.time) {
-                daysInMonth.append(completion.amount)
-                daysInYear.append(completion.amount)
-            } else if thisYear.contains(completion.time) {
-                daysInYear.append(completion.amount)
+            if dates.contains(completion.time) {
+                items.append(completion.amount)
             }
         }
-        
         if habit.name == "Weight" {
-            week = daysInWeek.reduce(0, +)/Double(daysInWeek.count)
-            month = daysInMonth.reduce(0, +)/Double(daysInMonth.count)
-            year = daysInYear.reduce(0, +)/Double(daysInYear.count)
-        } else {
-            week = daysInWeek.reduce(0, +)
-            month = daysInMonth.reduce(0, +)
-            year = daysInYear.reduce(0, +)
+            if items.count == 0 {
+                return 0
+            }
+            return items.reduce(0, +)/Double(items.count)
         }
-        
-        total = totalAmount()
-        
-        currentStreak = habit.currentStreak()
-        
-        longestStreak = habit.longestStreak()
+        return items.reduce(0, +)
     }
     
-    func totalAmount() -> Double {
+    func totalOverall() -> Double {
         var total = 0.0
         for completion in habit.completions {
             total += completion.amount
         }
         if habit.name == "Weight" {
+            if habit.completions.count == 0 {
+                return 0
+            }
             return total/Double(habit.completions.count)
         }
         return total
