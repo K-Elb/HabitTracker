@@ -23,7 +23,7 @@ struct IconChooser: View {
         "takeoutbag.and.cup.and.straw.fill", "fish.fill", "apple.logo", "mug.fill", "cart.fill",
         "moon.fill", "cloud.sun.fill", "face.smiling.fill", "face.dashed.fill", "wind",
         "waveform.path.ecg", "brain.fill", "ear.fill", "eye.fill", "nose.fill",
-        "book.fill", "books.vertical.fill", "pencil", "list.bullet", "checklist",
+        "book.fill", "book.closed.fill", "books.vertical.fill", "pencil", "list.bullet", "checklist",
         "chart.bar.fill", "chart.line.uptrend.xyaxis", "graduationcap.fill", "keyboard.fill", "lightbulb.fill",
         "house.fill", "briefcase.fill", "bag.fill", "phone.fill", "lock.fill",
         "key.fill", "car.fill", "bus.fill", "airplane", "globe.americas.fill"

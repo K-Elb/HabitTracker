@@ -114,7 +114,7 @@ struct HabitRow2: View {
     var body: some View {
         VStack {
             HStack {
-                Label(habit.name, systemImage: habit.icon)
+                Image(systemName: habit.icon)
                     .foregroundStyle(.wb)
                 
                 Spacer()
@@ -128,10 +128,11 @@ struct HabitRow2: View {
                 addButton
             }
             .font(.title.bold())
+            .padding(8)
             
+            title
         }
-        .padding(.horizontal)
-        .padding(.vertical, 12)
+        .padding(8)
         .background(Color.from(string: habit.color), in: .rect(cornerRadius: 32))
         .containerShape(.capsule)
         .padding(.horizontal)
@@ -150,6 +151,17 @@ struct HabitRow2: View {
             default: EmptyView()
             }
         }
+    }
+    
+    var title: some View {
+            Text(habit.name)
+            .font(.title.bold())
+            .multilineTextAlignment(.leading)
+            .lineLimit(2)
+            .foregroundStyle(Color.from(string: habit.color))
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(12)
+            .background(.wb, in: .rect(cornerRadius: 24))
     }
     
     func addHabitEntry() {

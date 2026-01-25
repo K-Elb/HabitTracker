@@ -2,16 +2,19 @@
   "fill" : "automatic",
   "groups" : [
     {
+      "blend-mode" : "normal",
       "layers" : [
         {
           "blend-mode" : "normal",
-          "fill" : "automatic",
+          "fill" : {
+            "solid" : "extended-srgb:0.00000,0.53333,1.00000,1.00000"
+          },
           "glass" : true,
-          "hidden" : false,
-          "image-name" : "icon.png",
-          "name" : "icon",
+          "image-name" : "Screenshot 2026-01-25 at 12.40.27 PM.png",
+          "name" : "Screenshot 2026-01-25 at 12.40.27 PM",
+          "opacity" : 1,
           "position" : {
-            "scale" : 1.5,
+            "scale" : 1.65,
             "translation-in-points" : [
               0,
               0
@@ -19,13 +22,21 @@
           }
         }
       ],
-      "shadow" : {
-        "kind" : "neutral",
-        "opacity" : 0.5
+      "position" : {
+        "scale" : 1,
+        "translation-in-points" : [
+          0,
+          0
+        ]
       },
+      "shadow" : {
+        "kind" : "layer-color",
+        "opacity" : 0.25
+      },
+      "specular" : true,
       "translucency" : {
         "enabled" : true,
-        "value" : 0.5
+        "value" : 0.25
       }
     }
   ],
