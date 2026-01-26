@@ -122,7 +122,7 @@ struct HabitsView: View {
 //        for url in sampleGamesURLS {
 //            do {
 //                let (json, _) = try await URLSession.shared.data(from: url)
-//                let game = try JSONDecoder().decode(CodeBreaker.self, from: json)
+//                let game = try JSONDecoder().decode(Habit.self, from: json)
 //                modelContext.insert(game)
 //                print("Loaded sample games from \(url)")
 //            } catch {

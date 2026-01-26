@@ -11,12 +11,12 @@ struct EditEntries: View {
     var habit: Habit
     
     var body: some View {
-        if habit.completions.isEmpty {
+        if habit.logs.isEmpty {
             ContentUnavailableView("No Entries", systemImage: "xmark")
         } else {
             NavigationView {
                 List {
-                    ForEach(habit.completions) { entry in
+                    ForEach(habit.logs) { entry in
                         VStack(alignment: .leading) {
                             if habit.isDefault {
                                 let amount = habit.name == "Weight" ? String(entry.amount) : String(Int(entry.amount))
@@ -35,16 +35,16 @@ struct EditEntries: View {
                 .navigationTitle("Entries")
             }
             .onAppear {
-                habit.completions = habit.completions.sorted(by: { $0.time > $1.time })
+                habit.logs = habit.logs.sorted(by: { $0.time > $1.time })
             }
         }
     }
     
     func delete(offsets: IndexSet) {
         for offset in offsets {
-            habit.completions.remove(at: offset)
+            habit.logs.remove(at: offset)
         }
-        habit.completions = habit.completions.sorted(by: { $0.time > $1.time })
+        habit.logs = habit.logs.sorted(by: { $0.time > $1.time })
     }
     
 //    func addEntries() {

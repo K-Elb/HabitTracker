@@ -13,7 +13,7 @@ extension Habit: Codable {
         case name
         case icon
         case color
-        case completions
+        case logs
         case createdDate
         case dailyGoal
     }
@@ -26,7 +26,7 @@ extension Habit: Codable {
             name: try container.decode(String.self, forKey: .name),
             icon: try container.decode(String.self, forKey: .icon),
             color: try container.decode(String.self, forKey: .color),
-            completions: try container.decode([Log].self, forKey: .completions),
+            logs: try container.decode([Log].self, forKey: .logs),
             createdDate: try container.decode(Date.self, forKey: .createdDate),
             dailyGoal: try container.decode(Double.self, forKey: .dailyGoal)
         )
@@ -39,7 +39,7 @@ extension Habit: Codable {
         try container.encode(name, forKey: .name)
         try container.encode(icon, forKey: .icon)
         try container.encode(color, forKey: .color)
-        try container.encode(completions, forKey: .completions)
+        try container.encode(logs, forKey: .logs)
         try container.encode(createdDate, forKey: .createdDate)
         try container.encode(dailyGoal, forKey: .dailyGoal)
     }

@@ -79,8 +79,7 @@ struct HabitRow: View {
     
     var addButton: some View {
         Button(action: { addHabitEntry() }) {
-            let isDone = habit.isCompletedOn(selectedDate)
-            Image(systemName: isDone ? "checkmark" : "plus")
+            Image(systemName: habit.totalOn(selectedDate) >= habit.dailyGoal ? "checkmark" : "plus")
                 .font(.title.bold())
                 .foregroundStyle(.wb)
                 .padding(8)
@@ -140,8 +139,7 @@ struct HabitRow2: View {
     
     var addButton: some View {
         Button(action: { addHabitEntry() }) {
-            let isDone = habit.isCompletedOn()
-            Image(systemName: isDone ? "checkmark" : "plus")
+            Image(systemName: habit.totalOn() >= habit.dailyGoal ? "checkmark" : "plus")
                 .foregroundStyle(.wb)
                 .contentTransition(.symbolEffect(.replace))
         }

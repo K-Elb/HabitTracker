@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct Stats: View {
-    var habit: Habit
+    let habit: Habit
     
     let calendar = Calendar.current
     let today = Date()
@@ -51,7 +51,7 @@ struct Stats: View {
     
     func totalAmount(this dates: DateInterval) -> Double {
         var items: [Double] = []
-        for completion in habit.completions {
+        for completion in habit.logs {
             if dates.contains(completion.time) {
                 items.append(completion.amount)
             }
@@ -67,14 +67,14 @@ struct Stats: View {
     
     func totalOverall() -> Double {
         var total = 0.0
-        for completion in habit.completions {
+        for completion in habit.logs {
             total += completion.amount
         }
         if habit.name == "Weight" {
-            if habit.completions.count == 0 {
+            if habit.logs.count == 0 {
                 return 0
             }
-            return total/Double(habit.completions.count)
+            return total/Double(habit.logs.count)
         }
         return total
     }

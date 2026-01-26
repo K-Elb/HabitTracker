@@ -15,10 +15,114 @@ struct TaskCompletion {
     var value: Double
 }
 
+@Observable
+final class YearViewModel {
+    let habit: Habit
+    var year: Int {
+            didSet { rebuild() }
+        }
+
+    init(habit: Habit, year: Int) {
+        self.habit = habit
+        self.year = year
+        rebuild()
+    }
+    
+    var days: [TaskCompletion] = []
+    let calendar = Calendar.current
+    
+    func isOldestYear() -> Bool {
+        let oldestDate = habit.logs.map(\.time).min() ?? Date()
+        if calendar.component(.year, from: oldestDate) == year {
+            return true
+        }
+        return false
+    }
+    
+    func isThisYear() -> Bool {
+        if calendar.component(.year, from: Date()) == year {
+            return true
+        }
+        return false
+    }
+    
+    func setYear(_ newYear: Int) {
+        year = newYear
+        rebuild()
+    }
+    
+    func nextYear() {
+        year += 1
+    }
+    
+    func previousYear() {
+        year -= 1
+    }
+
+    private func rebuild() {
+        days = buildDays(for: year)
+    }
+    
+    func buildDays(for year: Int) -> [TaskCompletion] {
+        guard
+            let start = calendar.date(from: DateComponents(year: year, month: 1, day: 1)),
+            let end = calendar.date(from: DateComponents(year: year + 1, month: 1, day: 1))
+        else { return [] }
+
+        let totals = totalsByDay(calendar: calendar)
+
+        var results: [TaskCompletion] = []
+        results.reserveCapacity(366)
+
+        var current = start
+        while current < end {
+            let day = calendar.startOfDay(for: current)
+            let comps = calendar.dateComponents([.month, .day], from: day)
+
+            results.append(
+                TaskCompletion(
+                    date: day,
+                    x: comps.month!,
+                    y: -comps.day!,
+                    value: totals[day, default: 0]
+                )
+            )
+
+            current = calendar.date(byAdding: .day, value: 1, to: current)!
+        }
+
+        return results
+    }
+    
+    func totalsByDay(calendar: Calendar = .current) -> [Date: Double] {
+        var result: [Date: Double] = [:]
+
+        for log in habit.logs {
+            let day = calendar.startOfDay(for: log.time)
+            result[day, default: 0] += log.amount
+        }
+
+        return result
+    }
+}
+
 struct YearView: View {
     let habit: Habit
-    @Binding var year: Int
+    
+    @State private var viewModel: YearViewModel
 
+    init(habit: Habit) {
+        self.habit = habit
+        
+        let currentYear = Calendar.current.component(.year, from: .now)
+        _viewModel = State(
+            wrappedValue: YearViewModel(
+                habit: habit,
+                year: currentYear
+            )
+        )
+    }
+    
     private let calendar = Calendar.current
     private let circleSize: CGFloat = 10
     private let spacing: CGFloat = 0
@@ -34,38 +138,7 @@ struct YearView: View {
         }
     }
     
-    var oldestYear: Int {
-        let oldestDate = habit.completions.map(\.time).min() ?? Date()
-        return calendar.component(.year, from: oldestDate)
-    }
     
-    var latestYear: Int {
-        calendar.component(.year, from: Date())
-    }
-    
-    var allDaysInYear: [TaskCompletion] {
-        guard
-            let start = calendar.date(from: DateComponents(year: year, month: 1, day: 1)),
-            let end = calendar.date(from: DateComponents(year: year, month: 12, day: 31))
-        else { return [] }
-        
-        var dates: [TaskCompletion] = []
-        var current = start
-        
-        while current <= end {
-            dates.append(
-                TaskCompletion(
-                    date: current,
-                    x: calendar.component(.month, from: current),
-                    y: -calendar.component(.day, from: current),
-                    value: habit.totalOn(current) //Double(Int.random(in: 0...4))
-                )
-            )
-            current = calendar.date(byAdding: .day, value: 1, to: current)!
-        }
-        
-        return dates
-    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -78,7 +151,7 @@ struct YearView: View {
             .font(.caption.bold())
             .foregroundStyle(color)
             
-            Chart(allDaysInYear, id: \.date) { data in
+            Chart(viewModel.days, id: \.date) { data in
                 let w  = MarkDimension(floatLiteral: 18)
                 if data.value > 0 {
                     RectangleMark (
@@ -109,14 +182,14 @@ struct YearView: View {
             .chartForegroundStyleScale(range: colorRange)
             
             HStack {
-                if year > oldestYear {
-                    Button(action: { year -= 1 }) {
+                if !viewModel.isOldestYear() {
+                    Button(action: { viewModel.previousYear() }) {
                         Image(systemName: "chevron.backward")
                     }
                 }
                 Spacer()
-                if year < latestYear {
-                    Button(action: { year += 1 }) {
+                if !viewModel.isThisYear() {
+                    Button(action: { viewModel.nextYear() }) {
                         Image(systemName: "chevron.forward")
                     }
                 }
@@ -124,7 +197,7 @@ struct YearView: View {
             .padding(.vertical)
             .padding(.horizontal, 24)
             .overlay {
-                Text(String(year))
+                Text(String(viewModel.year))
             }
             .bold()
             .foregroundStyle(color)
@@ -133,6 +206,5 @@ struct YearView: View {
 }
 
 #Preview {
-    @Previewable @State var year = 2026
-    YearView(habit: Habit(sortOrder: 0, name: "Test", icon: "flame", color: "red", dailyGoal: 3.0), year: $year)
+    YearView(habit: Habit(sortOrder: 0, name: "Test", icon: "flame", color: "red", dailyGoal: 3.0))
 }

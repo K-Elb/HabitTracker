@@ -13,14 +13,13 @@ struct HabitDetail: View {
     var isDetailed: Bool = true
     
     @State private var selectedDate: Date = Date()
-    @State private var year: Int = 2026
     
     var body: some View {
         ScrollView(showsIndicators: false) {
             HabitRow(habit: habit, isDetailed: isDetailed, selectedDate: $selectedDate)
 
             if isDetailed {
-                YearView(habit: habit, year: $year)
+                YearView(habit: habit)
                 
                 EditButtons(habit: habit)
             }

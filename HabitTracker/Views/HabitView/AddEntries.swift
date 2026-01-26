@@ -56,12 +56,12 @@ struct AddEntries: View {
     }
     
     func getDates() -> Set<DateComponents> {
-        Set(habit.completions.map { calendar.dateComponents([.year, .month, .day], from: $0.time) })
+        Set(habit.logs.map { calendar.dateComponents([.year, .month, .day], from: $0.time) })
     }
     
     func save() {
         for date in selectedDates.compactMap(\.date) {
-            if !habit.completions.contains(where: { calendar.isDate($0.time, inSameDayAs: date) }) {
+            if !habit.logs.contains(where: { calendar.isDate($0.time, inSameDayAs: date) }) {
                 habit.addCompletion(date)
                 print("added")
             }
