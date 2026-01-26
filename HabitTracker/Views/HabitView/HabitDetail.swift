@@ -16,7 +16,7 @@ struct HabitDetail: View {
     
     var body: some View {
         ScrollView(showsIndicators: false) {
-            HabitRow(habit: habit, isDetailed: isDetailed, selectedDate: $selectedDate)
+            HabitRow(habit: habit, isDetailed: isDetailed)
 
             if isDetailed {
                 YearView(habit: habit)

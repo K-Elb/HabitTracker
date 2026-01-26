@@ -66,16 +66,16 @@ final class YearViewModel {
     func buildDays(for year: Int) -> [TaskCompletion] {
         guard
             let start = calendar.date(from: DateComponents(year: year, month: 1, day: 1)),
-            let end = calendar.date(from: DateComponents(year: year + 1, month: 1, day: 1))
+            let end = calendar.date(from: DateComponents(year: year, month: 12, day: 31))
         else { return [] }
 
         let totals = totalsByDay(calendar: calendar)
 
         var results: [TaskCompletion] = []
-        results.reserveCapacity(366)
+        results.reserveCapacity(365)
 
         var current = start
-        while current < end {
+        while current <= end {
             let day = calendar.startOfDay(for: current)
             let comps = calendar.dateComponents([.month, .day], from: day)
 

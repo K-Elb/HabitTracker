@@ -15,7 +15,6 @@ struct HabitsList: View {
     @State private var expanded: Bool = false
     @State private var selectedHabit: Habit?
     @State private var refreshID = UUID()
-    @State private var selectedDate = Date()
     
     var body: some View {
         ScrollView(showsIndicators: false) {
@@ -48,15 +47,16 @@ struct HabitsList: View {
                 
                     // MARK: - Option 3
                     Button(action: {selectedHabit = habit}) {
-                        HabitRow2(habit: habit)
+                        HabitRow(habit: habit, isDetailed: false)
                             .matchedTransitionSource(id: habit, in: transition)
                     }
                     .fullScreenCover(item: $selectedHabit) { habit in
                         HabitDetail(habit: habit)
                             .navigationTransition(.zoom(sourceID: habit, in: transition))
                     }
+                    .frame(height: 128)
                 }
-            }
+            }.padding(.vertical, 48)
             .id(refreshID)
         }
     }
