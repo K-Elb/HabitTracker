@@ -31,13 +31,13 @@ struct WeekView: View {
             Text(shortDateFormatter.string(from: date))
                 .font(.caption.bold())
             
-                    Text(dayFormatter.string(from: date))
+            Text(dayFormatter.string(from: date))
         }
         .bold()
-        .padding(8)
+        .padding(.vertical, 12)
         .frame(maxWidth: .infinity)
         .foregroundStyle(done ? .wb: Color.from(string: habit.color))
-        .background(selectedDate == date ? .primary : done ? Color.from(string: habit.color) : .wb, in: .rect(cornerRadius: 8))
+        .background(selectedDate == date ? .secondary : done ? Color.wb.opacity(0.3) : .wb, in: .rect(cornerRadius: 12))
     }
     
     // MARK: - Date Helpers

@@ -12,19 +12,26 @@ struct HabitDetail: View {
     var habit: Habit
     var isDetailed: Bool = true
     
-    @State private var selectedDate: Date = Date()
-    
     var body: some View {
         ScrollView(showsIndicators: false) {
-            HabitRow(habit: habit, isDetailed: isDetailed)
-
-            if isDetailed {
-                YearView(habit: habit)
+            VStack(spacing: 0) {
+                HabitRow(habit: habit, isDetailed: isDetailed)
                 
-                EditButtons(habit: habit)
+                if isDetailed {
+                    YearView(habit: habit)
+                    
+                    if habit.dailyGoal != 1 || habit.name == "Weight" {
+                        HistoryChart(habit: habit)
+                    }
+                    
+                    Stats(habit: habit)
+                    
+                    //                EditButtons(habit: habit)
+                }
             }
         }
-        .ignoresSafeArea(edges: .top)
+        .background(Color.from(string: habit.color))
+//        .ignoresSafeArea(edges: .top)
     }
 }
 
@@ -42,13 +49,6 @@ struct EditButtons: View {
             }
             .sheet(isPresented: $isEditingHabit) {
                 HabitEditor(habit: habit, isEditing: true) { }
-            }
-            
-            Button("Save Habit", systemImage: "square.and.arrow.down") {
-                if let json = try? JSONEncoder().encode(habit) {
-                    let url = URL.documentsDirectory.appendingPathComponent(habit.name).appendingPathExtension("json")
-                    try? json.write(to: url)
-                }
             }
         }
         .buttonStyle(.bordered)
@@ -74,6 +74,6 @@ struct EditButtons: View {
 
 #Preview {
     NavigationStack {
-        HabitDetail(habit: Habit(sortOrder: 0, name: "drink water", icon: "drop.fill", color: "cyan"))
+        HabitDetail(habit: Habit(sortOrder: 0, name: "drink water", icon: "drop.fill", color: "cyan", dailyGoal: 5.0))
     }
 }

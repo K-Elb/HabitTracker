@@ -137,71 +137,83 @@ struct YearView: View {
             return [color.opacity(0.2), color.opacity(0.6), color]
         }
     }
-    
-    
 
     var body: some View {
         VStack(spacing: 0) {
-            HStack(spacing: (UIScreen.main.bounds.width)/18) {
-                ForEach(months.indices, id: \.self) { index in
-                    Text(months[index])
-                }
-            }
-            .padding(.top)
-            .font(.caption.bold())
-            .foregroundStyle(color)
+            ChartHeader
             
-            Chart(viewModel.days, id: \.date) { data in
-                let w  = MarkDimension(floatLiteral: 18)
-                if data.value > 0 {
-                    RectangleMark (
-                        x: .value("x", data.x),
-                        y: .value("y", data.y),
-                        width: w,
-                        height: w
-                    )
-                    .cornerRadius(16)
-                    .foregroundStyle(by: .value("Number", min(habit.dailyGoal, data.value)))
-                } else {
-                    RectangleMark (
-                        x: .value("x", data.x),
-                        y: .value("y", data.y),
-                        width: w,
-                        height: w
-                    )
-                    .cornerRadius(16)
-                    .foregroundStyle(.gray.opacity(0.2))
-                }
-            }
-            .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height-192)
-            .chartLegend(.hidden)
-            .chartXAxis(.hidden)
-            .chartYAxis(.hidden)
-            .chartXScale(domain: 0...13)
-            .chartYScale(domain: -32...0)
-            .chartForegroundStyleScale(range: colorRange)
+            ChartBody
             
-            HStack {
-                if !viewModel.isOldestYear() {
-                    Button(action: { viewModel.previousYear() }) {
-                        Image(systemName: "chevron.backward")
-                    }
-                }
-                Spacer()
-                if !viewModel.isThisYear() {
-                    Button(action: { viewModel.nextYear() }) {
-                        Image(systemName: "chevron.forward")
-                    }
-                }
-            }
-            .padding(.vertical)
-            .padding(.horizontal, 24)
-            .overlay {
-                Text(String(viewModel.year))
-            }
-            .bold()
-            .foregroundStyle(color)
+            ChartFooter
         }
+        .background(.wb)
+    }
+    
+    var ChartHeader: some View {
+        HStack(spacing: (UIScreen.main.bounds.width)/18) {
+            ForEach(months.indices, id: \.self) { index in
+                Text(months[index])
+            }
+        }
+        .padding(.top)
+        .font(.caption.bold())
+        .foregroundStyle(color)
+    }
+    
+    var ChartBody: some View {
+        Chart(viewModel.days, id: \.date) { data in
+            let w  = MarkDimension(floatLiteral: 18)
+            if data.value > 0 {
+                RectangleMark (
+                    x: .value("x", data.x),
+                    y: .value("y", data.y),
+                    width: w,
+                    height: w
+                )
+                .cornerRadius(16)
+                .foregroundStyle(by: .value("Number", min(habit.dailyGoal, data.value)))
+            } else {
+                RectangleMark (
+                    x: .value("x", data.x),
+                    y: .value("y", data.y),
+                    width: w,
+                    height: w
+                )
+                .cornerRadius(16)
+                .foregroundStyle(.gray.opacity(0.2))
+            }
+        }
+        .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height-192)
+        .chartLegend(.hidden)
+        .chartXAxis(.hidden)
+        .chartYAxis(.hidden)
+        .chartXScale(domain: 0...13)
+        .chartYScale(domain: -32...0)
+        .chartForegroundStyleScale(range: colorRange)
+    }
+    
+    var ChartFooter: some View {
+        HStack {
+            if !viewModel.isOldestYear() {
+                Button(action: { viewModel.previousYear() }) {
+                    Image(systemName: "chevron.backward")
+                }
+            }
+            Spacer()
+            if !viewModel.isThisYear() {
+                Button(action: { viewModel.nextYear() }) {
+                    Image(systemName: "chevron.forward")
+                }
+            }
+        }
+        .overlay {
+            Text(String(viewModel.year))
+        }
+        .foregroundStyle(color)
+        .bold()
+        .padding(.horizontal, 24)
+        .padding(.bottom, 24)
+        .padding(.top, 8)
     }
 }
 

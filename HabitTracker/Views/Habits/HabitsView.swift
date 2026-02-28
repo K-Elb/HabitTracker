@@ -29,27 +29,28 @@ struct HabitsView: View {
 //            .navigationTitle("Habits")
 //            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                addButton
-                editHabits
+                ToolbarButtons
             }
             .task { await addSampleHabits() }
         }
     }
     
-    // MARK: - Habits List
-    var editHabits: some View {
-        Button("Edit habits", systemImage: "list.bullet") {
-            showOrderList = true
+    var ToolbarButtons: some View {
+        Menu {
+            Button("New habit", systemImage: "plus") {
+                habitToEdit = Habit(sortOrder: habits.count, name: "", icon: "figure", color: "blue", dailyGoal: 1)
+            }
+            Button("Edit habits", systemImage: "list.bullet") {
+                showOrderList = true
+            }
+            Button("Save habits", systemImage: "square.and.arrow.down") {
+                saveHabits()
+            }
+        } label: {
+            Image(systemName: "ellipsis")
         }
         .sheet(isPresented: $showOrderList) {
             ReorderView(habits: habits)
-        }
-    }
-    
-    // MARK: - Add Habit
-    var addButton: some View {
-        Button("Add Habit", systemImage: "plus") {
-            habitToEdit = Habit(sortOrder: habits.count, name: "", icon: "figure", color: "blue", dailyGoal: 1)
         }
         .sheet(isPresented: showHabitEditor) {
             habitEditor
@@ -115,6 +116,15 @@ struct HabitsView: View {
             modelContext.insert(Habit(sortOrder: 0, name: "Water", icon: "waterbottle.fill", color: "cyan", dailyGoal: 2500))
             modelContext.insert(Habit(sortOrder: 2, name: "Weight", icon: "figure", color: "orange"))
             modelContext.insert(Habit(sortOrder: 1, name: "Calories", icon: "flame.fill", color: "red", dailyGoal: 2200))
+        }
+    }
+    
+    func saveHabits() {
+        for habit in habits {
+            if let json = try? JSONEncoder().encode(habit) {
+                let url = URL.documentsDirectory.appendingPathComponent(habit.name).appendingPathExtension("json")
+                try? json.write(to: url)
+            }
         }
     }
     

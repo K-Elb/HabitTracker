@@ -24,39 +24,80 @@ struct AddEntries: View {
     
     var body: some View {
         NavigationView {
-            VStack(spacing: 20) {
-                MultiDatePicker(
-                    "Date",
-                    selection: $selectedDates,
-                    in: bounds
-                )
-                .frame(height: 300)
+            VStack {
+                MultiDatePicker("Date", selection: $selectedDates, in: bounds)
+//                .frame(height: 300)
+                .onChange(of: selectedDates) { oldSelection, newSelection in
+                    syncLogs(with: newSelection)
+                }
                 
-                Text("Selected date: \(selectedDates.count)")
+//                List {
+//                    ForEach(habit.logs) { log in
+//                        HStack {
+//                            Text(log.time, style: .date)
+//                            Spacer()
+//                            TextField("Value", value: binding(for: log), format: .number)
+//                                .keyboardType(.decimalPad)
+//                                .frame(maxWidth: 80, alignment: .trailing)
+//                        }
+//                    }
+//                }
             }
-            .padding()
+//            .padding()
             .onAppear {
                 selectedDates = getDates()
             }
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") {
-                        save()
-                        dismiss()
-                    }
-                }
-                
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
-                        dismiss()
-                    }
-                }
-            }
+//            .toolbar {
+//                ToolbarItem(placement: .confirmationAction) {
+//                    Button("Save") {
+//                        save()
+//                        dismiss()
+//                    }
+//                }
+//                
+//                ToolbarItem(placement: .cancellationAction) {
+//                    Button("Cancel") {
+//                        dismiss()
+//                    }
+//                }
+//            }
         }
+    }
+    
+    func date(from components: DateComponents) -> Date {
+        calendar.date(from: components)!
     }
     
     func getDates() -> Set<DateComponents> {
         Set(habit.logs.map { calendar.dateComponents([.year, .month, .day], from: $0.time) })
+    }
+    
+    func syncLogs(with selection: Set<DateComponents>) {
+        let dates = selection.map { date(from: $0) }
+        
+        // Add
+        for date in dates {
+            if !habit.logs.contains(where: { calendar.isDate($0.time, inSameDayAs: date) }) {
+                habit.addCompletion(date)
+                print("Added new entry")
+            }
+        }
+        
+        // Remove
+        habit.logs.removeAll { log in
+            !dates.contains { calendar.isDate($0, inSameDayAs: log.time) }
+        }
+    }
+    
+    func binding(for log: Log) -> Binding<Double> {
+        Binding(
+            get: { log.amount },
+            set: { newValue in
+                if let index = habit.logs.firstIndex(of: log) {
+                    habit.logs[index].amount = newValue
+                }
+            }
+        )
     }
     
     func save() {
@@ -75,4 +116,8 @@ struct AddEntries: View {
 //            }
 //        }
     }
+}
+
+#Preview {
+    AddEntries(habit: Habit(sortOrder: 0, name: "drink water", icon: "drop.fill", color: "cyan"))
 }

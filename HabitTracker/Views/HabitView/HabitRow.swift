@@ -36,18 +36,16 @@ struct HabitRow: View {
             }
             .frame(height: 48)
             .font(.title.bold())
-            .padding(.top, isDetailed ? 64 : 16)
+            .padding(.top, /*isDetailed ? 64 :*/ 16)
             
             title
             
             if isDetailed {
-                Stats(habit: habit)
-                
                 WeekView(habit: habit, selectedDate: $selectedDate)
             }
         }
-        .padding(.bottom, isDetailed ? 16 : 8)
-        .padding(.horizontal, isDetailed ? 24: 8)
+        .padding(.bottom, 8)
+        .padding(.horizontal, isDetailed ? 16: 8)
         .background(Color.from(string: habit.color), in: .rect(cornerRadius: isDetailed ? 0 : 32))
         .containerShape(.rect(cornerRadius: 32))
         .padding(.horizontal, isDetailed ? 0 : 16)

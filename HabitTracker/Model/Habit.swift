@@ -65,16 +65,12 @@ final class Habit {
     }
     
     func totalOn(_ date: Date = Date()) -> Double {
-        var total: Double = 0.0
-        let calender = Calendar.current
+        let calendar = Calendar.current
         
-        for completion in logs {
-            if calender.isDate(completion.time, inSameDayAs: date) {
-                total += completion.amount
-            }
-        }
-        
-        return total
+        return logs
+            .filter { calendar.isDate($0.time, inSameDayAs: date) }
+            .map { $0.amount }
+            .reduce(0, +)
     }
     
     func addCompletion(_ date: Date, of amount: Double = 1.0) {
@@ -95,7 +91,7 @@ final class Habit {
         let loggedDays = Set(logs.map { calendar.startOfDay(for: $0.time) })
         
         while true {
-            if loggedDays.contains(currentDate), totalOn(currentDate) >= dailyGoal {
+            if loggedDays.contains(currentDate)/*, totalOn(currentDate) >= dailyGoal*/ {
                 streak += 1
                 currentDate = calendar.date(byAdding: .day, value: -1, to: currentDate)!
             } else if calendar.isDateInToday(currentDate) {
@@ -114,7 +110,7 @@ final class Habit {
         var currentStreak = 0
         var previousDay: Date?
         
-        let successfulDays = Set(logs.map { calendar.startOfDay(for: $0.time) }.filter { totalOn($0) >= dailyGoal })
+        let successfulDays = Set(logs.map { calendar.startOfDay(for: $0.time) }/*.filter { totalOn($0) >= dailyGoal }*/)
         let sortedDays = successfulDays.sorted()
         
         for day in sortedDays {
