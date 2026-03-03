@@ -24,13 +24,16 @@ struct AddEntry: View {
             Button(action: {add()}) {
                 Label("Add", systemImage: "plus")
                     .frame(maxWidth: .infinity)
+                    .foregroundStyle(Color.from(string: habit.color))
             }
             .font(.title2.bold())
             .padding()
-            .background(Color.from(string: habit.color))
+            .background(.wb)
             .clipShape(.capsule)
         }
+        .frame(maxHeight: .infinity)
         .padding(.horizontal)
+        .background(Color.from(string: habit.color))
     }
     
     func add() {
@@ -51,7 +54,7 @@ struct SliderShape: View {
         Color.from(string: habit.color)
     }
     let maxCharacters = 4
-    let pHeight = 360.0
+    let pHeight = UIScreen.main.bounds.width - 32
     let pWidth = 100.0
     
     var body: some View {
@@ -60,8 +63,8 @@ struct SliderShape: View {
             Cup()
                 .fill(LinearGradient(
                     gradient: Gradient(stops: [
-                        .init(color: color, location: height),
-                        .init(color: .gray.opacity(0.1), location: height)
+                        .init(color: .wb.opacity(0.33), location: height),
+                        .init(color: .wb, location: height)
                     ]),
                     startPoint: .bottom,
                     endPoint: .top
@@ -72,8 +75,8 @@ struct SliderShape: View {
             Weight()
                 .fill(LinearGradient(
                     gradient: Gradient(stops: [
-                        .init(color: color, location: height),
-                        .init(color: .gray.opacity(0.1), location: height)
+                        .init(color: .wb.opacity(0.33), location: height),
+                        .init(color: .wb, location: height)
                     ]),
                     startPoint: .bottom,
                     endPoint: .top
@@ -96,7 +99,7 @@ struct SliderShape: View {
         
         HStack(spacing: 0) {
             TextField("", text: $textInput)
-                .padding()
+                .padding(.horizontal)
                 .focused($isFocused)
                 .keyboardType(habit.isAmountInt ? .numberPad : .decimalPad)
                 .multilineTextAlignment(.trailing)
@@ -115,6 +118,7 @@ struct SliderShape: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
         }
         .font(.system(size: 48).bold())
+        .foregroundStyle(.wb)
         .onAppear {
             if habit.name == "Weight" {
                 amount = 72.5
@@ -140,5 +144,5 @@ struct SliderShape: View {
 }
 
 #Preview {
-    AddEntry(habit: Habit(sortOrder: 0, name: "Weight", icon: "waterbottle", color: "blue"), selectedDate: Date())
+    AddEntry(habit: Habit(sortOrder: 0, name: "Weight", icon: "waterbottle", color: "orange"), selectedDate: Date())
 }

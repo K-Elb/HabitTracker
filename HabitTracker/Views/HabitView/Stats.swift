@@ -28,6 +28,10 @@ struct Stats: View {
 //                .padding(.top)
 //                .padding(.leading, 8)
             HStack {
+                stat("Current Streak", value: Double(currentStreak))
+                stat("Longest Streak", value: Double(longestStreak))
+            }
+            HStack {
                 stat("Week", value: week)
                 stat("Month", value: month)
             }
@@ -35,10 +39,7 @@ struct Stats: View {
                 stat("Year", value: year)
                 stat("Total", value: total)
             }
-            HStack {
-                stat("Current Streak", value: Double(currentStreak))
-                stat("Longest Streak", value: Double(longestStreak))
-            }
+            
             Text("Started on \(habit.createdDate.formatted(date: .abbreviated, time: .omitted))")
                 .font(.caption.bold())
                 .foregroundStyle(.wb.opacity(0.5))

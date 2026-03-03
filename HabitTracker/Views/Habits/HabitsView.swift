@@ -16,30 +16,35 @@ struct HabitsView: View {
     @State private var habitToEdit: Habit?
     @State private var showAddHabit = false
     @State private var showOrderList = false
+    @State private var search: String = ""
     
     var body: some View {
         NavigationStack {
-            Group {
-                if habits.isEmpty {
-                    emptyStateView()
-                } else {
-                    HabitsList(habits: habits)
+            HabitsList(search: search)
+                .navigationTitle("Habits")
+//                .navigationBarTitleDisplayMode(.inline)
+                .searchable(text: $search, prompt: Text("Search habits"))
+                .toolbar {
+                    ToolbarItem {
+                        ToolbarButtons
+                    }
+
+                    DefaultToolbarItem(kind: .search, placement: .bottomBar)
+                    
+                    ToolbarSpacer(.flexible, placement: .bottomBar)
+                    
+                    ToolbarItem(placement: .bottomBar) {
+                        Button("New habit", systemImage: "plus") {
+                            habitToEdit = Habit(sortOrder: habits.count, name: "", icon: "figure", color: "blue", dailyGoal: 1)
+                        }
+                    }
                 }
-            }
-//            .navigationTitle("Habits")
-//            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarButtons
-            }
-            .task { await addSampleHabits() }
+                .task { await addSampleHabits() }
         }
     }
     
     var ToolbarButtons: some View {
         Menu {
-            Button("New habit", systemImage: "plus") {
-                habitToEdit = Habit(sortOrder: habits.count, name: "", icon: "figure", color: "blue", dailyGoal: 1)
-            }
             Button("Edit habits", systemImage: "list.bullet") {
                 showOrderList = true
             }
