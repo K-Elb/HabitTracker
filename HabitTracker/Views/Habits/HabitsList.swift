@@ -12,7 +12,7 @@ struct HabitsList: View {
     @Query private var habits: [Habit]
     
     @Namespace var transition
-    @State private var expanded: Bool = false
+    @State private var stacked: Bool = true
     @State private var selectedHabit: Habit?
     @State private var refreshID = UUID()
     
@@ -25,22 +25,22 @@ struct HabitsList: View {
     
     var body: some View {
         if habits.isEmpty {
-            emptyStateView()
+            ContentUnavailableView("No Habits Available ", systemImage: "xmark.circle", description: Text("Start building better habits today"))
         } else {
             ScrollView(showsIndicators: false) {
                 VStack {
                     ForEach(0..<habits.count, id: \.self) { index in
                         let habit = habits[index]
                         // MARK: - Option 1
-                        //                    NavigationLink {
-                        //                        HabitDetail(habit: habit)
-                        //                            .navigationTransition(.zoom(sourceID: habit.id, in: transition))
-                        //                    } label: {
-                        //                        HabitRow(habit: habit, isDetailed: false)
-                        //                    }
-                        //                    .matchedTransitionSource(id: habit.id, in: transition)
-                        //                    .frame(height: 128)
-                        //                    .offset(y: CGFloat(132*index))
+//                                            NavigationLink {
+//                                                HabitDetail(habit: habit)
+//                                                    .navigationTransition(.zoom(sourceID: habit.id, in: transition))
+//                                            } label: {
+//                                                HabitRow(habit: habit, isDetailed: false)
+//                                            }
+//                                            .matchedTransitionSource(id: habit.id, in: transition)
+//                                            .frame(height: stacked ? 128 : .infinity)
+//                                            .offset(y: CGFloat(132*index))
                         
                         // MARK: - Option 2
                         //                    NavigationLink(value: habit) {
@@ -61,34 +61,27 @@ struct HabitsList: View {
                             HabitRow(habit: habit, isDetailed: false)
                                 .matchedTransitionSource(id: habit, in: transition)
                         }
+                        .buttonStyle(.plain)
                         .fullScreenCover(item: $selectedHabit) { habit in
                             HabitDetail(habit: habit)
                                 .navigationTransition(.zoom(sourceID: habit, in: transition))
                         }
-                        .frame(height: 128)
+                        .frame(height: stacked ? 64 : .infinity)
                     }
                 }
-                .padding(.vertical, 48)
-                .id(refreshID)
+                .padding(.vertical, stacked ? 76 : 0)
+//                .id(refreshID)
+                .toolbar {
+                    ToolbarSpacer()
+                    
+                    ToolbarItem {
+                        Button(action: { withAnimation{stacked.toggle()} }) {
+                            Image(systemName: stacked ? "rectangle.stack.fill" : "rectangle.fill")
+                        }
+                        .contentTransition(.symbolEffect(.automatic))
+                    }
+                }
             }
-        }
-    }
-    
-    // MARK: - Other
-    func emptyStateView() -> some View {
-        VStack {
-            ContentUnavailableView("No Habits Available ", systemImage: "xmark.circle", description: Text("Start building better habits today"))
-            
-//            Button(action: { showAddHabit = true }) {
-//                Text("Add Your First Habit")
-//                    .fontWeight(.semibold)
-//                    .foregroundColor(.white)
-//                    .frame(maxWidth: .infinity)
-//                    .padding()
-//                    .background(Color.blue)
-//                    .cornerRadius(12)
-//                    .padding(.horizontal, 40)
-//            }
         }
     }
 }

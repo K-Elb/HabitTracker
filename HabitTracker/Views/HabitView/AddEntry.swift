@@ -60,29 +60,43 @@ struct SliderShape: View {
     var body: some View {
         switch habit.name {
         case "Water":
-            Cup()
-                .fill(LinearGradient(
-                    gradient: Gradient(stops: [
-                        .init(color: .wb.opacity(0.33), location: height),
-                        .init(color: .wb, location: height)
-                    ]),
-                    startPoint: .bottom,
-                    endPoint: .top
-                ))
-                .aspectRatio(1, contentMode: .fit)
-                .gesture(dragPicker())
+            ZStack {
+                Cup()
+                    .stroke(lineWidth: 10)
+                    .foregroundStyle(.wb)
+                    .aspectRatio(1, contentMode: .fit)
+                
+                Cup()
+                    .fill(LinearGradient(
+                        gradient: Gradient(stops: [
+                            .init(color: color, location: height),
+                            .init(color: .wb, location: height)
+                        ]),
+                        startPoint: .bottom,
+                        endPoint: .top
+                    ))
+                    .aspectRatio(1, contentMode: .fit)
+                    .gesture(dragPicker())
+            }
         case "Weight":
-            Weight()
-                .fill(LinearGradient(
-                    gradient: Gradient(stops: [
-                        .init(color: .wb.opacity(0.33), location: height),
-                        .init(color: .wb, location: height)
-                    ]),
-                    startPoint: .bottom,
-                    endPoint: .top
-                ))
-                .aspectRatio(1, contentMode: .fit)
-                .gesture(dragPicker())
+            ZStack {
+                Weight()
+                    .stroke(lineWidth: 10)
+                    .foregroundStyle(.wb)
+                    .aspectRatio(1, contentMode: .fit)
+                
+                Weight()
+                    .fill(LinearGradient(
+                        gradient: Gradient(stops: [
+                            .init(color: color, location: height),
+                            .init(color: .wb, location: height)
+                        ]),
+                        startPoint: .bottom,
+                        endPoint: .top
+                    ))
+                    .aspectRatio(1, contentMode: .fit)
+                    .gesture(dragPicker())
+            }
         default:
             ZStack(alignment: .bottom) {
                 RoundedRectangle(cornerRadius: 8)

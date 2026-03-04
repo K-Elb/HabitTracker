@@ -18,11 +18,15 @@ struct HabitsView: View {
     @State private var showOrderList = false
     @State private var search: String = ""
     
+    var sampleGamesURLS: [URL] {
+        Bundle.main.paths(forResourcesOfType: "json", inDirectory: nil)
+            .map { URL(filePath: $0) }
+    }
+    
     var body: some View {
         NavigationStack {
             HabitsList(search: search)
                 .navigationTitle("Habits")
-//                .navigationBarTitleDisplayMode(.inline)
                 .searchable(text: $search, prompt: Text("Search habits"))
                 .toolbar {
                     ToolbarItem {
@@ -50,6 +54,11 @@ struct HabitsView: View {
             }
             Button("Save habits", systemImage: "square.and.arrow.down") {
                 saveHabits()
+            }
+            Button("Load habits", systemImage: "square.and.arrow.up") {
+                Task {
+                    await loadHabits()
+                }
             }
         } label: {
             Image(systemName: "ellipsis")
@@ -133,23 +142,18 @@ struct HabitsView: View {
         }
     }
     
-//    func loadSampleGames() async {
-//        for url in sampleGamesURLS {
-//            do {
-//                let (json, _) = try await URLSession.shared.data(from: url)
-//                let game = try JSONDecoder().decode(Habit.self, from: json)
-//                modelContext.insert(game)
-//                print("Loaded sample games from \(url)")
-//            } catch {
-//                print("Couldn't load a sample game: \(error.localizedDescription)")
-//            }
-//        }
-//    }
-//    
-//    var sampleGamesURLS: [URL] {
-//        Bundle.main.paths(forResourcesOfType: "json", inDirectory: nil)
-//            .map { URL(filePath: $0) }
-//    }
+    func loadHabits() async {
+        for url in sampleGamesURLS {
+            do {
+                let (json, _) = try await URLSession.shared.data(from: url)
+                let habit = try JSONDecoder().decode(Habit.self, from: json)
+                modelContext.insert(habit)
+                print("Loaded sample games from \(url)")
+            } catch {
+                print("Couldn't load a sample game: \(error.localizedDescription)")
+            }
+        }
+    }
 }
 
 #Preview(traits: .swiftData) {

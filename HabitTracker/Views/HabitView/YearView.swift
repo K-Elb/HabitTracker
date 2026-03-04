@@ -59,7 +59,7 @@ final class YearViewModel {
         year -= 1
     }
 
-    private func rebuild() {
+    func rebuild() {
         days = buildDays(for: year)
     }
     
@@ -190,6 +190,9 @@ struct YearView: View {
         .chartXScale(domain: 0...13)
         .chartYScale(domain: -32...0)
         .chartForegroundStyleScale(range: colorRange)
+        .onChange(of: habit.logs) {
+            viewModel.rebuild()
+        }
     }
     
     var ChartFooter: some View {

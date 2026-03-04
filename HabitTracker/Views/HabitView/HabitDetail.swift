@@ -9,29 +9,41 @@ import SwiftUI
 import SwiftData
 
 struct HabitDetail: View {
+    @Environment(\.dismiss) var dismiss
+
     var habit: Habit
     var isDetailed: Bool = true
     
     var body: some View {
-        ScrollView(showsIndicators: false) {
-            VStack(spacing: 0) {
-                HabitRow(habit: habit, isDetailed: isDetailed)
-                
-                if isDetailed {
-                    YearView(habit: habit)
+        NavigationView {
+            ScrollView(showsIndicators: false) {
+                VStack(spacing: 0) {
+                    HabitRow(habit: habit, isDetailed: isDetailed)
                     
-                    if habit.dailyGoal != 1 || habit.name == "Weight" {
-                        HistoryChart(habit: habit)
+                    if isDetailed {
+                        YearView(habit: habit)
+                        
+                        if habit.dailyGoal != 1 || habit.name == "Weight" {
+                            HistoryChart(habit: habit)
+                        }
+                        
+                        Stats(habit: habit)
                     }
-                    
-                    Stats(habit: habit)
-                    
-                    //                EditButtons(habit: habit)
+                }
+            }
+            .background(Color.from(string: habit.color))
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(action: {dismiss()}) {
+                        Image(systemName: "chevron.left")
+                    }
+                }
+                
+                ToolbarItem {
+                    EditButtons(habit: habit)
                 }
             }
         }
-        .background(Color.from(string: habit.color))
-//        .ignoresSafeArea(edges: .top)
     }
 }
 
@@ -43,32 +55,28 @@ struct EditButtons: View {
     @State private var isEditingHabit: Bool = false
 
     var body: some View {
-        HStack {
+        Menu {
             Button("Edit habit", systemImage: "pencil") {
                 isEditingHabit = true
             }
-            .sheet(isPresented: $isEditingHabit) {
-                HabitEditor(habit: habit, isEditing: true) { }
+            Button("Add missing entries", systemImage: "plus") {
+                isAdding = true
             }
+            Button("Edit entries", systemImage: "pencil") {
+                isEditingEntries = true
+            }
+        } label: {
+            Image(systemName: "ellipsis")
         }
-        .buttonStyle(.bordered)
-        
-        HStack {
-            Button(action: { isAdding = true }) {
-                Label("Add missing entries", systemImage: "plus")
-            }
-            .sheet(isPresented: $isAdding) {
-                AddEntries(habit: habit)
-            }
-            
-            Button(action: {isEditingEntries = true }) {
-                Label("Edit entries", systemImage: "pencil")
-            }
-            .sheet(isPresented: $isEditingEntries) {
-                EditEntries(habit: habit)
-            }
+        .sheet(isPresented: $isEditingHabit) {
+            HabitEditor(habit: habit, isEditing: true) { }
         }
-        .buttonStyle(.bordered)
+        .sheet(isPresented: $isAdding) {
+            AddEntries(habit: habit)
+        }
+        .sheet(isPresented: $isEditingEntries) {
+            EditEntries(habit: habit)
+        }
     }
 }
 
