@@ -36,18 +36,18 @@ struct HabitRow: View {
             }
             .frame(height: 48)
             .font(.title.bold())
-            .padding(.top, /*isDetailed ? 64 :*/ 16)
+            .padding(.top)
             
             title
             
-            if isDetailed {
+//            if isDetailed {
                 WeekView(habit: habit, selectedDate: $selectedDate)
-            }
+//            }
         }
+        .clipShape(RoundedRectangle(cornerRadius: isDetailed ? 0 : 24))
         .padding(.bottom, 8)
         .padding(.horizontal, isDetailed ? 16: 8)
         .background(Color.from(string: habit.color), in: .rect(cornerRadius: isDetailed ? 0 : 32))
-        .containerShape(.rect(cornerRadius: 32))
         .padding(.horizontal, isDetailed ? 0 : 16)
     }
     
@@ -74,7 +74,7 @@ struct HabitRow: View {
     
     var addButton: some View {
         Button(action: { addHabitEntry() }) {
-            Image(systemName: habit.totalOn(selectedDate) >= habit.dailyGoal ? "checkmark" : "plus")
+            Image(systemName: habit.isCompleted(selectedDate) ? "checkmark" : "plus")
                 .frame(maxHeight: .infinity)
         }
         .padding(.horizontal, 8)
@@ -82,21 +82,21 @@ struct HabitRow: View {
         .foregroundStyle(.wb)
         .contentTransition(.symbolEffect(.replace))
         .sheet(isPresented: $isShowingSheet) {
-            switch habit.name {
-            case "Water", "Calories", "Weight": AddEntry(habit: habit, selectedDate: selectedDate)
-            default: EmptyView()
-            }
+            AddEntry(habit: habit, selectedDate: selectedDate)
         }
     }
     
     func addHabitEntry() {
-        switch habit.name {
-        case "Water", "Calories", "Weight": isShowingSheet = true
-        default: habit.addCompletion(selectedDate)
+        if habit.type == "once" {
+            habit.addCompletion(selectedDate)
+        } else if habit.type == "onceWithValue" && habit.entriesOn(selectedDate) > 0 {
+            habit.addCompletion(selectedDate)
+        } else {
+            isShowingSheet = true
         }
     }
 }
 
 #Preview {
-    HabitRow(habit: Habit(sortOrder: 0, name: "Weigh", icon: "book.fill", color: "orange"), isDetailed: false)
+    HabitRow(habit: Habit(sortOrder: 0, name: "Weight", icon: "book.fill", color: "orange"), isDetailed: false)
 }

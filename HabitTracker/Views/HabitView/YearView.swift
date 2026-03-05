@@ -99,7 +99,7 @@ final class YearViewModel {
 
         for log in habit.logs {
             let day = calendar.startOfDay(for: log.time)
-            result[day, default: 0] += log.amount
+            result[day, default: 0] += log.value
         }
 
         return result

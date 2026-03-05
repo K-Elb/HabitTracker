@@ -60,7 +60,7 @@ struct Stats: View {
     func totalAmount(in interval: DateInterval) -> Double {
         let amounts = habit.logs
             .filter { interval.contains($0.time) }
-            .map { $0.amount }
+            .map { $0.value }
 
         guard !amounts.isEmpty else { return 0 }
 
@@ -86,7 +86,7 @@ struct Stats: View {
 //    }
     
     func totalOverall() -> Double {
-        let amounts = habit.logs.map { $0.amount }
+        let amounts = habit.logs.map { $0.value }
         
         guard !amounts.isEmpty else { return 0 }
         

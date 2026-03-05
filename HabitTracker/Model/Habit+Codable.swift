@@ -16,6 +16,7 @@ extension Habit: Codable {
         case logs
         case createdDate
         case dailyGoal
+        case type
     }
 
     convenience init(from decoder: Decoder) throws {
@@ -28,7 +29,8 @@ extension Habit: Codable {
             color: try container.decode(String.self, forKey: .color),
             logs: try container.decode([Log].self, forKey: .logs),
             createdDate: try container.decode(Date.self, forKey: .createdDate),
-            dailyGoal: try container.decode(Double.self, forKey: .dailyGoal)
+            dailyGoal: try container.decode(Double.self, forKey: .dailyGoal),
+            type: try container.decode(String.self, forKey: .type)
         )
     }
 
@@ -42,13 +44,14 @@ extension Habit: Codable {
         try container.encode(logs, forKey: .logs)
         try container.encode(createdDate, forKey: .createdDate)
         try container.encode(dailyGoal, forKey: .dailyGoal)
+        try container.encode(type, forKey: .type)
     }
 }
 
 extension Log: Codable {
     enum CodingKeys: String, CodingKey {
         case time
-        case amount
+        case value
     }
 
     convenience init(from decoder: Decoder) throws {
@@ -56,7 +59,7 @@ extension Log: Codable {
         
         self.init(
             time: try container.decode(Date.self, forKey: .time),
-            amount: try container.decode(Double.self, forKey: .amount)
+            value: try container.decode(Double.self, forKey: .value)
         )
     }
 
@@ -64,7 +67,7 @@ extension Log: Codable {
         var container = encoder.container(keyedBy: CodingKeys.self)
 
         try container.encode(time, forKey: .time)
-        try container.encode(amount, forKey: .amount)
+        try container.encode(value, forKey: .value)
     }
 }
 

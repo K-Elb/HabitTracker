@@ -19,7 +19,7 @@ struct EditEntries: View {
                     ForEach(habit.logs) { entry in
                         VStack(alignment: .leading) {
                             if habit.isDefault {
-                                let amount = habit.name == "Weight" ? String(entry.amount) : String(Int(entry.amount))
+                                let amount = habit.name == "Weight" ? String(entry.value) : String(Int(entry.value))
                                 Text("\(amount) \(habit.unit)")
                                     .bold()
                             }

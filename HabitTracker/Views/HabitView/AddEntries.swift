@@ -91,10 +91,10 @@ struct AddEntries: View {
     
     func binding(for log: Log) -> Binding<Double> {
         Binding(
-            get: { log.amount },
+            get: { log.value },
             set: { newValue in
                 if let index = habit.logs.firstIndex(of: log) {
-                    habit.logs[index].amount = newValue
+                    habit.logs[index].value = newValue
                 }
             }
         )

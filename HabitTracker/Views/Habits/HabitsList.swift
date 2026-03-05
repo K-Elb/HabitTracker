@@ -29,8 +29,7 @@ struct HabitsList: View {
         } else {
             ScrollView(showsIndicators: false) {
                 VStack {
-                    ForEach(0..<habits.count, id: \.self) { index in
-                        let habit = habits[index]
+                    ForEach(habits, id: \.name) { habit in
                         // MARK: - Option 1
 //                                            NavigationLink {
 //                                                HabitDetail(habit: habit)
@@ -66,10 +65,10 @@ struct HabitsList: View {
                             HabitDetail(habit: habit)
                                 .navigationTransition(.zoom(sourceID: habit, in: transition))
                         }
-                        .frame(height: stacked ? 64 : .infinity)
+                        .frame(height: stacked ? 120 : 296)
                     }
                 }
-                .padding(.vertical, stacked ? 76 : 0)
+                .padding(.vertical, stacked ? 88 : 0)
 //                .id(refreshID)
                 .toolbar {
                     ToolbarSpacer()

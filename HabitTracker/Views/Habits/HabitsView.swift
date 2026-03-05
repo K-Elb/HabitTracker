@@ -79,7 +79,8 @@ struct HabitsView: View {
                 name: habitToEdit.name,
                 icon: habitToEdit.icon,
                 color: habitToEdit.color,
-                dailyGoal: habitToEdit.dailyGoal
+                dailyGoal: habitToEdit.dailyGoal,
+                type: habitToEdit.type
             )
             
             HabitEditor(habit: copyOfHabitToEdit) {
@@ -127,9 +128,9 @@ struct HabitsView: View {
             modelContext.insert(Habit(sortOrder: 4, name: "Exercise", icon: "dumbbell.fill", color: "indigo"))
             modelContext.insert(Habit(sortOrder: 5, name: "Meditate", icon: "apple.meditate", color: "green"))
             
-            modelContext.insert(Habit(sortOrder: 0, name: "Water", icon: "waterbottle.fill", color: "cyan", dailyGoal: 2500))
-            modelContext.insert(Habit(sortOrder: 2, name: "Weight", icon: "figure", color: "orange"))
-            modelContext.insert(Habit(sortOrder: 1, name: "Calories", icon: "flame.fill", color: "red", dailyGoal: 2200))
+            modelContext.insert(Habit(sortOrder: 0, name: "Water", icon: "waterbottle.fill", color: "cyan", dailyGoal: 2500, type: "multiple"))
+            modelContext.insert(Habit(sortOrder: 2, name: "Weight", icon: "figure", color: "orange", dailyGoal: 70.0, type: "onceWithValue"))
+            modelContext.insert(Habit(sortOrder: 1, name: "Calories", icon: "flame.fill", color: "red", dailyGoal: 2200, type: "multiple"))
         }
     }
     

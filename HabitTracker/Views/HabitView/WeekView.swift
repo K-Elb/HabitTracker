@@ -26,7 +26,7 @@ struct WeekView: View {
     
     @ViewBuilder
     func DateButton(_ date: Date) -> some View {
-        let done: Bool = habit.totalOn(date) >= habit.dailyGoal
+        let done: Bool = habit.isCompleted(date)
         VStack {
             Text(shortDateFormatter.string(from: date))
                 .font(.caption.bold())
@@ -69,4 +69,12 @@ struct WeekView: View {
         formatter.dateFormat = "EEE" // Mon, Tue, etc.
         return formatter
     }
+}
+
+#Preview {
+    @Previewable @State var date = Date()
+    WeekView(habit: Habit(sortOrder: 0, name: "Weigh", icon: "book.fill", color: "orange"), selectedDate: $date)
+    
+    HabitRow(habit: Habit(sortOrder: 0, name: "Weigh", icon: "book.fill", color: "orange"), isDetailed: false)
+
 }

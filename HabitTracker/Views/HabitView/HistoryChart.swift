@@ -71,7 +71,7 @@ struct HistoryChart: View {
             Chart(Logs) {
                 BarMark(
                     x: .value("Date", $0.time.formatted(selectedPeriod.dateFormat)),
-                    y: .value("Value", $0.amount)
+                    y: .value("Value", $0.value)
                 )
                 .foregroundStyle(Color.from(string: habit.color))
             }
@@ -127,11 +127,11 @@ struct HistoryChart: View {
         while current <= now {
             if selectedPeriod == .week || selectedPeriod == .month {
                 let day = calendar.startOfDay(for: current)
-                results.append(Log(time: day, amount: totals[day, default: 0]))
+                results.append(Log(time: day, value: totals[day, default: 0]))
                 current = calendar.date(byAdding: .day, value: 1, to: current)!
             } else {
-                let t = totalAmount(for: .year, on: current)
-                results.append(Log(time: current, amount: t))
+                let t = totalValue(for: .year, on: current)
+                results.append(Log(time: current, value: t))
                 current = calendar.date(byAdding: .month, value: 1, to: current)!
             }
         }
@@ -144,31 +144,31 @@ struct HistoryChart: View {
 
         for log in habit.logs {
             let day = calendar.startOfDay(for: log.time)
-            result[day, default: 0] += log.amount
+            result[day, default: 0] += log.value
         }
 
         return result
     }
     
-    func totalAmount(for component: Calendar.Component, on date: Date) -> Double {
+    func totalValue(for component: Calendar.Component, on date: Date) -> Double {
         guard let interval = calendar.dateInterval(of: component, for: date) else {
             return 0
         }
-        return totalAmount(in: interval)
+        return totalValue(in: interval)
     }
 
-    func totalAmount(in interval: DateInterval) -> Double {
-        let amounts = habit.logs
+    func totalValue(in interval: DateInterval) -> Double {
+        let values = habit.logs
             .filter { interval.contains($0.time) }
-            .map { $0.amount }
+            .map { $0.value }
 
-        guard !amounts.isEmpty else { return 0 }
+        guard !values.isEmpty else { return 0 }
 
         if habit.name == "Weight" {
-            return amounts.reduce(0, +) / Double(amounts.count)
+            return values.reduce(0, +) / Double(values.count)
         }
 
-        return amounts.reduce(0, +)
+        return values.reduce(0, +)
     }
 }
 
@@ -177,18 +177,18 @@ struct HistoryChart: View {
     NavigationStack {
         VStack {
             HistoryChart(habit: Habit(sortOrder: 2, name: "name", icon: "figure", color: "orange", logs: [
-                Log(time: Date().addingTimeInterval(-86400 * 30), amount: 40),
-                Log(time: Date().addingTimeInterval(-86400 * 29), amount: 40),
-                Log(time: Date().addingTimeInterval(-86400 * 22), amount: 30),
-                Log(time: Date().addingTimeInterval(-86400 * 20), amount: 30),
-                Log(time: Date().addingTimeInterval(-86400 * 14), amount: 20),
-                Log(time: Date().addingTimeInterval(-86400 * 12), amount: 20),
-                Log(time: Date().addingTimeInterval(-86400 * 10), amount: 10),
-                Log(time: Date().addingTimeInterval(-86400 * 8), amount: 10),
-                Log(time: Date().addingTimeInterval(-86400 * 6), amount: 6),
-                Log(time: Date().addingTimeInterval(-86400 * 4), amount: 4),
-                Log(time: Date().addingTimeInterval(-86400 * 2), amount: 2),
-                Log(time: Date(), amount: 1)
+                Log(time: Date().addingTimeInterval(-86400 * 30), value: 40),
+                Log(time: Date().addingTimeInterval(-86400 * 29), value: 40),
+                Log(time: Date().addingTimeInterval(-86400 * 22), value: 30),
+                Log(time: Date().addingTimeInterval(-86400 * 20), value: 30),
+                Log(time: Date().addingTimeInterval(-86400 * 14), value: 20),
+                Log(time: Date().addingTimeInterval(-86400 * 12), value: 20),
+                Log(time: Date().addingTimeInterval(-86400 * 10), value: 10),
+                Log(time: Date().addingTimeInterval(-86400 * 8), value: 10),
+                Log(time: Date().addingTimeInterval(-86400 * 6), value: 6),
+                Log(time: Date().addingTimeInterval(-86400 * 4), value: 4),
+                Log(time: Date().addingTimeInterval(-86400 * 2), value: 2),
+                Log(time: Date(), value: 1)
             ]))
         }
 //        .background(.orange)

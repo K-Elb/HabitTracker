@@ -33,10 +33,18 @@ struct HabitEditor: View {
                         .scrollDismissesKeyboard(.interactively)
                 }
                 
-                Section("Daily Goal") {
-                    TextField("Enter the daily goal", value: $habit.dailyGoal, format: .number)
-                        .keyboardType(.numberPad)
-                        .scrollDismissesKeyboard(.interactively)
+                Section("Goal") {
+                    Picker("Entries per day", selection: $habit.type) {
+                        Text("Once").tag("once")
+                        Text("Once with value").tag("onceWithValue")
+                        Text("Multiple times").tag("multiple")
+                    }
+                    
+                    if habit.type != "once" {
+                        TextField("Enter the daily goal", value: $habit.dailyGoal, format: .number)
+                            .keyboardType(.numberPad)
+                            .scrollDismissesKeyboard(.interactively)
+                    }
                 }
                 
                 Section("Icon") {
@@ -76,6 +84,9 @@ struct HabitEditor: View {
     
     func done() {
         if habit.isValid {
+            if habit.type == "once" {
+                habit.dailyGoal = 1
+            }
             onChoose()
             dismiss()
         } else {
@@ -91,7 +102,7 @@ extension Habit {
 }
 
 #Preview {
-    @Previewable var habit: Habit = Habit(sortOrder: 0, name: "Water", icon: "waterbottle", color: "blue", dailyGoal: 2500)
+    @Previewable var habit: Habit = Habit(sortOrder: 0, name: "Water", icon: "waterbottle", color: "blue")
     HabitEditor(habit: habit) {
         print("game name changed to \(habit.name)")
         print("game pegs changed to \(habit.icon)")
