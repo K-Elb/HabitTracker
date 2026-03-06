@@ -39,7 +39,7 @@ struct HabitsView: View {
                     
                     ToolbarItem(placement: .bottomBar) {
                         Button("New habit", systemImage: "plus") {
-                            habitToEdit = Habit(sortOrder: habits.count, name: "", icon: "figure", color: "blue", dailyGoal: 1)
+                            habitToEdit = Habit(sortOrder: habits.count, name: "", icon: "figure", color: "255,56,60", dailyGoal: 1)
                         }
                     }
                 }

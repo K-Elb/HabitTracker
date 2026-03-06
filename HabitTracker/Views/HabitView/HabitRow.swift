@@ -12,6 +12,7 @@ import SwiftData
 struct HabitRow: View {
     let habit: Habit
     var isDetailed: Bool = false
+    var stacked: Bool = false
     
     @State private var selectedDate: Date = Date()
     @State private var isShowingSheet: Bool = false
@@ -40,15 +41,16 @@ struct HabitRow: View {
             
             title
             
-//            if isDetailed {
+            if !stacked {
                 WeekView(habit: habit, selectedDate: $selectedDate)
-//            }
+                    .transition(.asymmetric(insertion: .offset(y: 800), removal: .push(from: .top)))
+            }
         }
         .clipShape(RoundedRectangle(cornerRadius: isDetailed ? 0 : 24))
         .padding(.bottom, 8)
-        .padding(.horizontal, isDetailed ? 16: 8)
+        .padding(.horizontal, isDetailed ? 16 : 8)
         .background(Color.from(string: habit.color), in: .rect(cornerRadius: isDetailed ? 0 : 32))
-        .padding(.horizontal, isDetailed ? 0 : 16)
+        .padding(.horizontal, isDetailed ? 0 : 8)
     }
     
     var title: some View {

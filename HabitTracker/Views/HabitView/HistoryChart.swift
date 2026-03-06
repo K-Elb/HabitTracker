@@ -61,12 +61,7 @@ struct HistoryChart: View {
 //            .padding(.leading, 24)
         
         VStack {
-            HStack {
-                ForEach(TimePeriod.allCases, id: \.self) { period in
-                    PeriodPicker(period)
-                }
-            }
-            .padding(.bottom, 8)
+            
             
             Chart(Logs) {
                 BarMark(
@@ -82,6 +77,13 @@ struct HistoryChart: View {
 //                    labelFormat: selectedPeriod.dateFormat
 //                )
 //            }
+            
+            HStack {
+                ForEach(TimePeriod.allCases, id: \.self) { period in
+                    PeriodPicker(period)
+                }
+            }
+            .padding(.top, 8)
         }
         .padding()
         .background(.wb)
