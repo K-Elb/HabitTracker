@@ -17,6 +17,8 @@ struct AddEntry: View {
     
     @State private var value: Double = 250
     @State private var textInput: String = "250"
+    @State private var isTapped: Bool = false
+
     @FocusState private var isFocused: Bool
     
     let maxCharacters = 4
@@ -24,6 +26,7 @@ struct AddEntry: View {
     var body: some View {
         VStack {
             SliderShape(habit: habit, value: $value, textInput: $textInput)
+                .sensoryFeedback(.selection, trigger: value)
             
             HStack(spacing: 0) {
                 TextField("", text: $textInput)
@@ -57,6 +60,7 @@ struct AddEntry: View {
             .padding()
             .background(.wb)
             .clipShape(.capsule)
+            .sensoryFeedback(.impact, trigger: isTapped)
         }
         .frame(maxHeight: .infinity)
         .padding(.horizontal)
@@ -64,6 +68,7 @@ struct AddEntry: View {
     }
     
     func add() {
+        isTapped.toggle()
         habit.addCompletion(selectedDate, of: value)
         dismiss()
     }
@@ -77,6 +82,20 @@ struct SliderShape: View {
     @State private var height: CGFloat = 0.5
     @FocusState private var isFocused: Bool
     
+    var dragPicker: some Gesture {
+        DragGesture()
+            .onChanged { newValue in
+                let actual = newValue.location.y/pHeight
+                let percentage = max(0.1, min(1, 1-actual))
+                height = percentage
+                if habit.name == "Weight" {
+                    value = valueDouble(from: 65, to: 80, by: 0.1)
+                } else {
+                    value = valueInt(from: 0, to: 500, by: 25) //Double(Int(height*20)*25)
+                }
+                textInput = habit.isAmountInt ? String(Int(value)) : String(value)
+            }
+    }
     var color: Color {
         Color.from(string: habit.color)
     }
@@ -88,10 +107,10 @@ struct SliderShape: View {
         switch habit.name {
         case "Water":
             CupSlider(color: color, height: height)
-                .gesture(dragPicker())
+                .gesture(dragPicker)
         case "Weight":
             WeightSlider(color: color, height: height)
-                .gesture(dragPicker())
+                .gesture(dragPicker)
                 .onAppear {
                     value = 72.5
                     textInput = "72.5"
@@ -107,23 +126,29 @@ struct SliderShape: View {
                     .frame(height: pHeight * height)
             }
             .frame(maxWidth: pWidth, maxHeight: pHeight)
-            .gesture(dragPicker())
+            .gesture(dragPicker)
         }
     }
     
-    func dragPicker() -> some Gesture {
-        DragGesture()
-            .onChanged { newValue in
-                let actual = newValue.location.y/pHeight
-                let percentage = max(0.1, min(1, 1-actual))
-                height = percentage
-                if habit.name == "Weight" {
-                    value = height*15 + 65
-                } else {
-                    value = Double(Int(height*20)*25)
-                }
-                textInput = habit.isAmountInt ? String(Int(value)) : String(value)
-            }
+//    func heightValue(from min: Double, to max: Double, by step: Double) -> Double {
+//        let scaled = min + height * (max - min)
+//        let rounded = (scaled / step).rounded() * step
+//        return rounded
+//    }
+    
+    func valueDouble(from min: Int, to max: Int, by step: Double) -> Double {
+        let minTenths = min * 10
+        let maxTenths = max * 10
+        let steps = maxTenths - minTenths
+        let stepIndex = Int((height * Double(steps)).rounded())
+        let valueTenths = minTenths + stepIndex
+        return Double(valueTenths) / 10.0
+    }
+    
+    func valueInt(from min: Int, to max: Int, by step: Int) -> Double {
+        let steps = (max - min) / step
+        let stepIndex = Int((height * Double(steps)).rounded())
+        return Double(min + stepIndex * step)
     }
 }
 

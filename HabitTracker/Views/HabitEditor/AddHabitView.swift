@@ -40,35 +40,35 @@ struct HabitEditor: View {
                         Text("Multiple times").tag("multiple")
                     }
                     
-                    if habit.type != "once" {
-                        TextField("Enter the daily goal", value: $habit.dailyGoal, format: .number)
-                            .keyboardType(.numberPad)
-                            .scrollDismissesKeyboard(.interactively)
-                    }
-                }
-                
-                Section("Icon") {
-                    IconChooser(selectedIcon: $habit.icon)
+                    TextField("Daily goal", value: $habit.dailyGoal, format: .number)
+                        .keyboardType(.numberPad)
+                        .scrollDismissesKeyboard(.interactively)
+                        .disabled(habit.type == "once")
                 }
                 
                 Section("Color") {
                     ColorChooser(selectedColor: $habit.color)
                 }
+                
+                Section("Icon") {
+                    IconChooser(selectedIcon: $habit.icon)
+                }
             }
             .navigationTitle("Habit Editor")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                if !isEditing {
-                    ToolbarItem(placement: .cancellationAction) {
-                        Button("Cancel") {
-                            dismiss()
-                        }
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel", systemImage: "xmark") {
+                        dismiss()
                     }
-                    
+                }
+                
+                if !isEditing {
                     ToolbarItem {
                         Button("Add") {
                             done()
                         }
+                        .bold()
                         .alert("Invalid Habit", isPresented: $showInvalidHabitAlert) {
                             Button("OK") {
                                 showInvalidHabitAlert = false

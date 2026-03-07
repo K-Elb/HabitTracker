@@ -16,7 +16,8 @@ struct HabitRow: View {
     
     @State private var selectedDate: Date = Date()
     @State private var isShowingSheet: Bool = false
-    
+    @State private var isTapped: Bool = false
+
     var body: some View {
         VStack {
             HStack(spacing: 0) {
@@ -86,12 +87,15 @@ struct HabitRow: View {
         .sheet(isPresented: $isShowingSheet) {
             AddEntry(habit: habit, selectedDate: selectedDate)
         }
+        .sensoryFeedback(.impact, trigger: isTapped)
     }
     
     func addHabitEntry() {
         if habit.type == "once" {
+            isTapped.toggle()
             habit.addCompletion(selectedDate)
         } else if habit.type == "onceWithValue" && habit.entriesOn(selectedDate) > 0 {
+            isTapped.toggle()
             habit.addCompletion(selectedDate)
         } else {
             isShowingSheet = true

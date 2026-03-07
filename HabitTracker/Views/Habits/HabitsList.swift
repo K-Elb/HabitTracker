@@ -60,6 +60,7 @@ struct HabitsList: View {
                             Image(systemName: stacked ? "rectangle.stack.fill" : "rectangle.fill")
                         }
                         .contentTransition(.symbolEffect(.automatic))
+                        .sensoryFeedback(.success, trigger: stacked)
                     }
                 }
             }
