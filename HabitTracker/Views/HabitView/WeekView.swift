@@ -20,7 +20,6 @@ struct WeekView: View {
                     DateButton(date)
                 }
             }
-            .frame(maxWidth: .infinity)
         }
     }
     

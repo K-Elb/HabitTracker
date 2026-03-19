@@ -27,11 +27,9 @@ struct HabitRow: View {
                 
                 Spacer()
                 
-                if habit.isDefault {
-                    let amount = habit.name == "Weight" ? String(habit.totalOn(selectedDate)) : String(Int(habit.totalOn(selectedDate)))
-                    Text("\(amount) \(habit.unit)")
+                if habit.type != "once" {
+                    Text("\(habit.isAmountInt ? String(Int(habit.totalOn(selectedDate))) : String(habit.totalOn(selectedDate))) \(habit.unit)")
                         .foregroundStyle(.wb)
-                        .ignoresSafeArea()
                 }
                 
                 addButton

@@ -14,7 +14,6 @@ struct HabitsList: View {
     @Namespace var transition
     @State private var stacked: Bool = true
     @State private var selectedHabit: Habit?
-    @State private var chosenHabit: Habit?
     @State private var refreshID = UUID()
     
     init(search: String = "") {
@@ -32,18 +31,18 @@ struct HabitsList: View {
                 VStack(spacing: stacked ? -80 : 8) {
                     ForEach(habits, id: \.name) { habit in
                         // MARK: - Option 1
-//                                            NavigationLink {
-//                                                HabitDetail(habit: habit)
-//                                                    .navigationTransition(.zoom(sourceID: habit.id, in: transition))
-//                                            } label: {
-//                                                HabitRow(habit: habit, isDetailed: false)
-//                                            }
-//                                            .matchedTransitionSource(id: habit.id, in: transition)
-//                                            .frame(height: stacked ? 128 : .infinity)
-//                                            .offset(y: CGFloat(132*index))
+//                        NavigationLink {
+//                            HabitDetail(habit: habit)
+//                                .navigationTransition(.zoom(sourceID: habit.id, in: transition))
+//                        } label: {
+//                            HabitRow(habit: habit, isDetailed: false)
+//                        }
+//                        .matchedTransitionSource(id: habit.id, in: transition)
+//                        .frame(height: stacked ? 128 : .infinity)
+//                        .offset(y: CGFloat(132*index))
                         
                         // MARK: - Option 2
-                        Button(action: { viewHabit(habit) }) {
+                        Button(action: { selectedHabit = habit }) {
                             HabitRow(habit: habit, isDetailed: false, stacked: stacked)
                                 .matchedTransitionSource(id: habit.name, in: transition)
                         }
@@ -65,13 +64,6 @@ struct HabitsList: View {
                 }
             }
         }
-    }
-    
-    func viewHabit(_ habit: Habit) {
-        withAnimation(.linear(duration: 3.0)) {
-            chosenHabit = habit
-        }
-        selectedHabit = habit
     }
 }
 

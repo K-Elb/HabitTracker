@@ -32,10 +32,11 @@ final class Habit {
     var createdDate: Date = Date()
     var dailyGoal: Double = 1
     var type: String = "once"
+    var unit: String = ""
     
     init() { } // For Codable extension + all vars need to be initialised
     
-    init(sortOrder: Int, name: String, icon: String, color: String, logs: [Log] = [], createdDate: Date = Date(), dailyGoal: Double = 1.0, type: String = "once") {
+    init(sortOrder: Int, name: String, icon: String, color: String, logs: [Log] = [], createdDate: Date = Date(), dailyGoal: Double = 1.0, type: String = "once", unit: String = "") {
         self.sortOrder = sortOrder
         self.name = name
         self.icon = icon
@@ -44,19 +45,11 @@ final class Habit {
         self.createdDate = createdDate
         self.dailyGoal = dailyGoal
         self.type = type
+        self.unit = unit
     }
     
     var isDefault: Bool {
         name == "Water" || name == "Calories" || name == "Weight"
-    }
-    
-    var unit: String {
-        switch name {
-        case "Water": return "ml"
-        case "Calories": return "kcal"
-        case "Weight": return "kg"
-        default: return ""
-        }
     }
     
     var isAmountInt: Bool {

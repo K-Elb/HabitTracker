@@ -33,17 +33,29 @@ struct HabitEditor: View {
                         .scrollDismissesKeyboard(.interactively)
                 }
                 
-                Section("Goal") {
+                Section("Log") {
                     Picker("Entries per day", selection: $habit.type) {
                         Text("Once").tag("once")
                         Text("Once with value").tag("onceWithValue")
                         Text("Multiple times").tag("multiple")
                     }
+                }
                     
+                Section("Goal") {
                     TextField("Daily goal", value: $habit.dailyGoal, format: .number)
                         .keyboardType(.numberPad)
                         .scrollDismissesKeyboard(.interactively)
                         .disabled(habit.type == "once")
+                    
+                    TextField("Unit (Optional)", text: $habit.unit)
+                        .autocorrectionDisabled(false)
+                        .scrollDismissesKeyboard(.interactively)
+                        .disabled(habit.type == "once")
+                        .onChange(of: habit.unit) { oldValue, newValue in
+                            if newValue.count > 8 {
+                                habit.unit = String(newValue.prefix(8))
+                            }
+                        }
                 }
                 
                 Section("Color") {
