@@ -29,7 +29,11 @@ struct ReorderView: View {
                     EditButton()
                 }
             }
-            .task { await addHabits() }
+            .task {
+                #if targetEnvironment(simulator)
+                await addHabits()
+                #endif
+            }
         }
     }
     

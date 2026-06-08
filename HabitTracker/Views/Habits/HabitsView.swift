@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftData
+import UniformTypeIdentifiers
 
 struct HabitsView: View {
     @Environment(\.modelContext) private var modelContext
@@ -17,11 +18,12 @@ struct HabitsView: View {
     @State private var showAddHabit = false
     @State private var showOrderList = false
     @State private var search: String = ""
+    @State private var showFilePicker = false
     
-    var sampleGamesURLS: [URL] {
-        Bundle.main.paths(forResourcesOfType: "json", inDirectory: nil)
-            .map { URL(filePath: $0) }
-    }
+//    var sampleGamesURLS: [URL] {
+//        Bundle.main.paths(forResourcesOfType: "json", inDirectory: nil)
+//            .map { URL(filePath: $0) }
+//    }
     
     var body: some View {
         NavigationStack {
@@ -43,7 +45,11 @@ struct HabitsView: View {
                         }
                     }
                 }
-                .task { await addSampleHabits() }
+                .task {
+                    #if targetEnvironment(simulator)
+                    await addSampleHabits()
+                    #endif
+                }
         }
     }
     
@@ -52,13 +58,11 @@ struct HabitsView: View {
             Button("Edit habits", systemImage: "list.bullet") {
                 showOrderList = true
             }
-            Button("Save habits", systemImage: "square.and.arrow.down") {
+            Button("Export all habits", systemImage: "square.and.arrow.up") {
                 saveHabits()
             }
-            Button("Load habits", systemImage: "square.and.arrow.up") {
-                Task {
-                    await loadHabits()
-                }
+            Button("Load habit", systemImage: "square.and.arrow.down") {
+                showFilePicker = true
             }
         } label: {
             Image(systemName: "ellipsis")
@@ -68,6 +72,15 @@ struct HabitsView: View {
         }
         .sheet(isPresented: showHabitEditor) {
             habitEditor
+        }
+        .fileImporter(isPresented: $showFilePicker, allowedContentTypes: [UTType.json], allowsMultipleSelection: false) { result in
+            switch result {
+            case .success(let urls):
+                guard let selectedURL = urls.first else { return }
+                processPickedFile(at: selectedURL)
+            case .failure(let error):
+                print("Error selecting file: \(error.localizedDescription)")
+            }
         }
     }
     
@@ -143,16 +156,36 @@ struct HabitsView: View {
         }
     }
     
-    func loadHabits() async {
-        for url in sampleGamesURLS {
-            do {
-                let (json, _) = try await URLSession.shared.data(from: url)
-                let habit = try JSONDecoder().decode(Habit.self, from: json)
-                modelContext.insert(habit)
-                print("Loaded sample games from \(url)")
-            } catch {
-                print("Couldn't load a sample game: \(error.localizedDescription)")
+    //Access the file securely
+    private func processPickedFile(at url: URL) {
+        // Gain temporary security-scoped access to the sandbox-restricted URL
+        let hasAccess = url.startAccessingSecurityScopedResource()
+        
+        // Ensure the resource is released when this block finishes executing
+        defer {
+            if hasAccess {
+                url.stopAccessingSecurityScopedResource()
             }
+        }
+        
+        if hasAccess {
+            Task {
+                await loadHabits(url: url)
+            }
+        } else {
+            print("Permission denied to access file.")
+        }
+    }
+    
+    func loadHabits(url: URL) async {
+        do {
+            let (json, _) = try await URLSession.shared.data(from: url)
+            let habit = try JSONDecoder().decode(Habit.self, from: json)
+            if habits.contains(where: { $0.name == habit.name }) { print("Habit already exists"); return }
+            modelContext.insert(habit)
+            print("Loaded habit from \(url)")
+        } catch {
+            print("Couldn't load habit: \(error.localizedDescription)")
         }
     }
 }

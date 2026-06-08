@@ -86,6 +86,9 @@ struct HabitRow: View {
             AddEntry(habit: habit, selectedDate: selectedDate)
         }
         .sensoryFeedback(.impact, trigger: isTapped)
+        .onAppear {
+            selectedDate = Date()
+        }
     }
     
     func addHabitEntry() {
